@@ -30,9 +30,11 @@ const WIPAY_REQUEST_URL = process.env.WIPAY_REQUEST_URL || "https://tt.wipayfina
 const WIPAY_ALLOWED_ORIGIN = process.env.WIPAY_ALLOWED_ORIGIN || "https://cayascoopsnsmile.com";
 const DEFAULT_ALLOWED_ORIGINS = [
   "https://cayascoopsnsmile.com",
+  "https://www.cayascoopsnsmile.com",
   "https://app.cayascoopsnsmile.com",
   "https://pos.cayascoopsnsmile.com",
   "https://admin.cayascoopsnsmile.com",
+  "https://caya-scoops-n-smile.pages.dev",
   "https://caya-scoops-n-smile-5026d.web.app",
   "https://caya-scoops-n-smile-5026d.firebaseapp.com"
 ];
