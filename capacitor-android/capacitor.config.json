@@ -1,0 +1,26 @@
+{
+  "appId": "com.cayascoopsnsmile.customer",
+  "appName": "Caya Scoops N Smile",
+  "webDir": "www",
+  "server": {
+    "url": "https://app.cayascoopsnsmile.com/customer-apk.html?portal=customer&androidApp=1&apkVersion=20260506c",
+    "cleartext": false,
+    "allowNavigation": [
+      "cayascoopsnsmile.com",
+      "*.cayascoopsnsmile.com",
+      "tt.wipayfinancial.com",
+      "*.wipayfinancial.com"
+    ]
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "launchShowDuration": 2200,
+      "backgroundColor": "#f8e7f4",
+      "androidScaleType": "CENTER_INSIDE",
+      "showSpinner": false
+    }
+  }
+}
+
+

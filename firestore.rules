@@ -1,0 +1,775 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function tokenRole() {
+      return isSignedIn() && request.auth.token.role is string
+        ? request.auth.token.role
+        : "";
+    }
+
+    function isConfiguredOwnerEmail() {
+      return signedInEmail() == "cayascoopsnsmile@gmail.com";
+    }
+
+    function isConfiguredAdminEmail() {
+      return signedInEmail() in [
+        "cayascoopsnsmile@gmail.com",
+        "cindyluvu26@gmail.com"
+      ];
+    }
+
+    function hasStaffRole(role) {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/staffRoles/$(signedInEmail()))
+        && get(/databases/$(database)/documents/staffRoles/$(signedInEmail())).data.role == role
+        && get(/databases/$(database)/documents/staffRoles/$(signedInEmail())).data.active != false;
+    }
+
+    function hasAnyStaffRole(roles) {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/staffRoles/$(signedInEmail()))
+        && get(/databases/$(database)/documents/staffRoles/$(signedInEmail())).data.role in roles
+        && get(/databases/$(database)/documents/staffRoles/$(signedInEmail())).data.active != false;
+    }
+
+    function hasAdminDocRole(roles) {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.active != false
+        && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role in roles;
+    }
+
+    function isOwner() {
+      return isSignedIn() && (
+        isConfiguredOwnerEmail()
+        || isConfiguredAdminEmail()
+        || tokenRole() == "owner"
+        || hasAnyStaffRole(["Owner", "owner"])
+        || hasAdminDocRole(["Owner", "owner"])
+      );
+    }
+
+    function isAdmin() {
+      return isOwner()
+        || isConfiguredAdminEmail()
+        || (isSignedIn() && tokenRole() == "admin")
+        || hasAdminDocRole(["Admin", "admin", "Manager", "manager"])
+        || hasAnyStaffRole(["Admin", "admin", "Manager", "manager"]);
+    }
+
+    function isCashier() {
+      return isAdmin()
+        || (isSignedIn() && tokenRole() == "cashier")
+        || hasAdminDocRole(["Cashier", "cashier"])
+        || hasAnyStaffRole(["Cashier", "cashier"]);
+    }
+
+    function isCustomer(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isOwnUserDoc(docId) {
+      return isSignedIn() && request.auth.uid == docId;
+    }
+
+    function signedInEmail() {
+      return isSignedIn() && request.auth.token.email is string
+        ? request.auth.token.email
+        : "";
+    }
+
+    function ownsEmailField() {
+      return isSignedIn()
+        && resource.data.email is string
+        && resource.data.email == signedInEmail();
+    }
+
+    function ownsCustomerEmailField() {
+      return isSignedIn()
+        && resource.data.customerEmail is string
+        && resource.data.customerEmail == signedInEmail();
+    }
+
+    function requestOwnsEmailField(fieldName) {
+      return isSignedIn()
+        && request.resource.data[fieldName] is string
+        && request.resource.data[fieldName] == signedInEmail();
+    }
+
+    function isNumber(value) {
+      return value is int || value is float;
+    }
+
+    function isTimestampOrString(value) {
+      return value is timestamp || value is string;
+    }
+
+    function hasValidOptionalNumber(fieldName) {
+      return !(fieldName in request.resource.data)
+        || (isNumber(request.resource.data[fieldName]) && request.resource.data[fieldName] >= 0);
+    }
+
+    function publicActive() {
+      return resource.data.public == true && resource.data.active == true;
+    }
+
+    function customerProtectedFields() {
+      return [
+        "role",
+        "staffRole",
+        "isAdmin",
+        "isOwner",
+        "isCashier",
+        "points",
+        "rewardSent",
+        "rewardDate",
+        "rewardStatus",
+        "rewardFlags",
+        "referralRewards",
+        "referralRewardStatus",
+        "birthdaySent",
+        "birthdaySentYear",
+        "birthdayRewardDate",
+        "birthdayRewardExpiry",
+        "birthdayRewardId",
+        "birthdayRewardCode",
+        "birthdayRewardQrCodeValue",
+        "birthdayRewardQrCodeImage",
+        "birthdayRewardStatus",
+        "birthdayRewardYear",
+        "birthdayRewardRedeemedYear",
+        "birthdayRewardRedeemedAt",
+        "birthdayRewardRedeemedBy",
+        "storeCredit",
+        "loyaltyId",
+        "referralCode",
+        "referralCodeExpiresAt",
+        "referralCodeExpired",
+        "referredByEmail",
+        "referralStatus",
+        "paymentStatus",
+        "transactionId",
+        "createdAt",
+        "createdBy",
+        "adminNotes",
+        "adminFlags",
+        "securityFlags"
+      ];
+    }
+
+    function customerCreateIsValid(uid) {
+      return request.resource.data.keys().hasAll(["name", "email", "createdAt"])
+        && isCustomer(uid)
+        && request.resource.data.uid == uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.name is string
+        && request.resource.data.email is string
+        && request.resource.data.createdAt is timestamp
+        && hasValidOptionalNumber("points")
+        && (!("points" in request.resource.data) || request.resource.data.points <= 10)
+        && (!("role" in request.resource.data) || request.resource.data.role == "customer")
+        && (!("dob" in request.resource.data) || isTimestampOrString(request.resource.data.dob));
+    }
+
+    function customerUpdateIsValid(uid) {
+      return isCustomer(uid)
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.email == resource.data.email
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(customerProtectedFields())
+        && (!("dob" in request.resource.data) || isTimestampOrString(request.resource.data.dob));
+    }
+
+    function userCreateIsValid(userId) {
+      return isSignedIn()
+        && request.auth.uid == userId
+        && requestOwnsEmailField("email")
+        && request.resource.data.keys().hasAll(["email"])
+        && (!("points" in request.resource.data) || (isNumber(request.resource.data.points) && request.resource.data.points >= 0 && request.resource.data.points <= 10))
+        && (!("storeCredit" in request.resource.data) || request.resource.data.storeCredit == 0)
+        && !request.resource.data.keys().hasAny([
+          "role",
+          "staffRole",
+          "isAdmin",
+          "isOwner",
+          "isCashier",
+          "rewardSent",
+          "rewardDate",
+          "rewardStatus",
+          "birthdaySent",
+          "birthdaySentYear",
+          "birthdayRewardRedeemedYear",
+          "paymentStatus",
+          "transactionId",
+          "adminNotes",
+          "securityFlags"
+        ]);
+    }
+
+    function userSelfUpdateIsValid() {
+      return ownsEmailField()
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(customerProtectedFields());
+    }
+
+    function paymentRequestCreateIsValid() {
+      return isSignedIn()
+        && requestOwnsEmailField("customerEmail")
+        && request.resource.data.paymentReference is string
+        && request.resource.data.paymentReference.size() > 0
+        && isNumber(request.resource.data.total)
+        && request.resource.data.total >= 0
+        && request.resource.data.paymentStatus in ["Pending", "pending"]
+        && request.resource.data.status in ["Pending", "Pending In-Person Payment", "Redirected to WiPay"];
+    }
+
+    function giftCardCreateIsValid() {
+      return isSignedIn()
+        && requestOwnsEmailField("customerEmail")
+        && isNumber(request.resource.data.amount)
+        && request.resource.data.amount >= 0
+        && (!("balance" in request.resource.data) || request.resource.data.balance == 0)
+        && (!("redeemed" in request.resource.data) || request.resource.data.redeemed == false)
+        && (!("status" in request.resource.data) || request.resource.data.status in ["pending", "active"]);
+    }
+
+    function favoriteOrderCreateIsValid() {
+      return isSignedIn()
+        && requestOwnsEmailField("customerEmail")
+        && request.resource.data.items is list;
+    }
+
+    function supportRequestCreateIsValid() {
+      return isSignedIn()
+        && requestOwnsEmailField("customerEmail")
+        && request.resource.data.message is string
+        && request.resource.data.status == "Open";
+    }
+
+    function feedbackCreateIsValid() {
+      return isSignedIn()
+        && requestOwnsEmailField("customerEmail")
+        && isNumber(request.resource.data.rating)
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5;
+    }
+
+    function addressCreateIsValid() {
+      return isSignedIn()
+        && requestOwnsEmailField("customerEmail")
+        && request.resource.data.address is string;
+    }
+
+    function referralRewardOwnerRead() {
+      return isSignedIn()
+        && resource.data.customerEmail is string
+        && resource.data.customerEmail == signedInEmail();
+    }
+
+    function referralLinkOwnerRead() {
+      return isSignedIn()
+        && (
+          (resource.data.referrerEmail is string && resource.data.referrerEmail == signedInEmail())
+          || (resource.data.referredEmail is string && resource.data.referredEmail == signedInEmail())
+        );
+    }
+
+    function customerOwnsNewOrder() {
+      return isSignedIn()
+        && request.resource.data.customerId == request.auth.uid
+        && request.resource.data.createdBy == request.auth.uid;
+    }
+
+    function customerOwnsOrder() {
+      return isSignedIn() && resource.data.customerId == request.auth.uid;
+    }
+
+    function validCustomerOrderCreate() {
+      return customerOwnsNewOrder()
+        && request.resource.data.keys().hasAll([
+          "customerId",
+          "createdBy",
+          "createdAt",
+          "items",
+          "total",
+          "status",
+          "paymentStatus"
+        ])
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.items is list
+        && isNumber(request.resource.data.total)
+        && request.resource.data.total >= 0
+        && request.resource.data.status in ["Pending", "Awaiting Payment"]
+        && request.resource.data.paymentStatus in ["Pending", "Not Required"]
+        && !request.resource.data.keys().hasAny([
+          "processedBy",
+          "processedAt",
+          "completedBy",
+          "completedAt",
+          "voidedBy",
+          "voidedAt",
+          "refundStatus",
+          "adminNotes",
+          "cashierNotes",
+          "rewardStatus",
+          "pointsIssued"
+        ]);
+    }
+
+    function cashierOrderUpdateFields() {
+      return [
+        "status",
+        "paymentStatus",
+        "processedBy",
+        "processedAt",
+        "completedBy",
+        "completedAt",
+        "cashierId",
+        "cashierName",
+        "cashierNotes",
+        "updatedAt",
+        "updatedBy",
+        "kitchenStatus",
+        "readyAt",
+        "pickedUpAt"
+      ];
+    }
+
+    function validCashierOrderUpdate() {
+      return isCashier()
+        && request.resource.data.customerId == resource.data.customerId
+        && request.resource.data.createdBy == resource.data.createdBy
+        && request.resource.data.total == resource.data.total
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(cashierOrderUpdateFields())
+        && request.resource.data.status in [
+          "Pending",
+          "Awaiting Payment",
+          "Preparing",
+          "Ready",
+          "Completed",
+          "Cancelled"
+        ]
+        && request.resource.data.paymentStatus in [
+          "Pending",
+          "Confirmed",
+          "Not Required",
+          "Failed",
+          "Refunded"
+        ];
+    }
+
+    function adminOrderUpdateIsValid() {
+      return isAdmin()
+        && request.resource.data.customerId == resource.data.customerId
+        && request.resource.data.createdBy == resource.data.createdBy
+        && isNumber(request.resource.data.total)
+        && request.resource.data.total >= 0;
+    }
+
+    function menuWriteIsValid() {
+      return request.resource.data.keys().hasAll(["name", "price", "active", "public"])
+        && request.resource.data.name is string
+        && isNumber(request.resource.data.price)
+        && request.resource.data.price >= 0
+        && request.resource.data.active is bool
+        && request.resource.data.public is bool;
+    }
+
+    function promoWriteIsValid() {
+      return request.resource.data.keys().hasAll(["code", "active", "public"])
+        && request.resource.data.code is string
+        && request.resource.data.active is bool
+        && request.resource.data.public is bool
+        && hasValidOptionalNumber("value");
+    }
+
+    function announcementWriteIsValid() {
+      return request.resource.data.keys().hasAll(["title", "message", "active", "public"])
+        && request.resource.data.title is string
+        && request.resource.data.message is string
+        && request.resource.data.active is bool
+        && request.resource.data.public is bool;
+    }
+
+    function rewardWriteIsValid() {
+      return request.resource.data.keys().hasAll(["customerId", "rewardType", "status"])
+        && request.resource.data.customerId is string
+        && request.resource.data.rewardType is string
+        && request.resource.data.status is string;
+    }
+
+    function staffWriteIsValid() {
+      return request.resource.data.keys().hasAll(["uid", "role", "active"])
+        && request.resource.data.uid is string
+        && request.resource.data.role in ["owner", "admin", "cashier", "customer"]
+        && request.resource.data.active is bool;
+    }
+
+    match /customers/{uid} {
+      allow get: if isOwner() || isAdmin() || isCashier() || isCustomer(uid);
+      allow list: if isOwner() || isAdmin() || isCashier();
+      allow create: if isOwner() || isAdmin() || customerCreateIsValid(uid);
+      allow update: if isOwner() || isAdmin() || customerUpdateIsValid(uid);
+      allow delete: if isOwner();
+    }
+
+    match /orders/{orderId} {
+      allow create: if isOwner() || isAdmin() || isCashier() || validCustomerOrderCreate();
+      allow get: if isOwner() || isAdmin() || isCashier() || customerOwnsOrder();
+      allow list: if isOwner() || isAdmin() || isCashier();
+      allow update: if isOwner() || adminOrderUpdateIsValid() || validCashierOrderUpdate();
+      allow delete: if isOwner() || isAdmin();
+    }
+
+    match /comboDeals/{comboId} {
+      allow get, list: if true;
+      allow create, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /bestSellerSpotlight/{spotlightId} {
+      allow get, list: if true;
+      allow create, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /menu/{itemId} {
+      allow get, list: if true;
+      allow create: if (isOwner() || isAdmin()) && menuWriteIsValid();
+      allow update: if (isOwner() || isAdmin()) && menuWriteIsValid();
+      allow delete: if isOwner() || isAdmin();
+    }
+
+    match /desserts/{dessertId} {
+      allow get, list: if true;
+      allow create, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /promos/{promoId} {
+      allow get, list: if isSignedIn() || isOwner() || isAdmin() || isCashier();
+      allow create: if (isOwner() || isAdmin()) && promoWriteIsValid();
+      allow update: if (isOwner() || isAdmin()) && promoWriteIsValid();
+      allow delete: if isOwner() || isAdmin();
+    }
+
+    match /promoUsages/{usageId} {
+      allow get: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow list: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow create: if isOwner() || isAdmin() || isCashier()
+        || (isSignedIn()
+          && requestOwnsEmailField("customerEmail")
+          && request.resource.data.promoCode is string);
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /announcements/{announcementId} {
+      allow get, list: if true;
+      allow create: if (isOwner() || isAdmin()) && announcementWriteIsValid();
+      allow update: if (isOwner() || isAdmin()) && announcementWriteIsValid();
+      allow delete: if isOwner() || isAdmin();
+    }
+
+    match /partyPackages/{packageId} {
+      allow get, list: if true;
+      allow create, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /websiteHighlights/{highlightId} {
+      allow get, list: if true;
+      allow create, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /partyOrderRequests/{requestId} {
+      allow create: if isSignedIn()
+        && request.resource.data.customerEmail is string
+        && request.resource.data.customerEmail == signedInEmail()
+        && request.resource.data.status == "Requested";
+      allow get, list, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /featureFlags/{flagId} {
+      allow get, list: if flagId == "partyOrders" || isOwner() || isAdmin() || isCashier();
+      allow create, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /rewards/{rewardId} {
+      allow get: if isOwner()
+        || isAdmin()
+        || isCashier()
+        || (isSignedIn() && resource.data.customerId == request.auth.uid);
+      allow list: if isOwner() || isAdmin() || isCashier();
+      allow create: if (isOwner() || isAdmin()) && rewardWriteIsValid();
+      allow update: if (isOwner() || isAdmin()) && rewardWriteIsValid();
+      allow delete: if isOwner() || isAdmin();
+    }
+
+    match /winners/{winnerId} {
+      allow get, list: if publicActive() || isOwner() || isAdmin() || isCashier();
+      allow create, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /dailyWinners/{winnerId} {
+      allow get, list: if isSignedIn() || isOwner() || isAdmin() || isCashier();
+      allow create, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /staff/{uid} {
+      allow read: if isOwner();
+      allow create: if isOwner() && staffWriteIsValid();
+      allow update: if isOwner()
+        && staffWriteIsValid()
+        && request.resource.data.uid == resource.data.uid;
+      allow delete: if isOwner();
+    }
+
+    match /users/{userId} {
+      allow get: if isOwner() || isAdmin() || isCashier() || isOwnUserDoc(userId) || ownsEmailField();
+      allow list: if isOwner() || isAdmin() || isCashier() || ownsEmailField();
+      allow create: if isOwner() || isAdmin() || isCashier() || userCreateIsValid(userId);
+      allow update: if isOwner() || isAdmin() || isCashier() || userSelfUpdateIsValid();
+      allow delete: if isOwner() || isAdmin();
+    }
+
+    match /sales/{saleId} {
+      allow get: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow list: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow create: if isOwner() || isAdmin() || isCashier()
+        || (isSignedIn()
+          && request.resource.data.customerEmail is string
+          && request.resource.data.customerEmail == signedInEmail()
+          && isNumber(request.resource.data.amount)
+          && request.resource.data.amount >= 0
+          && request.resource.data.paymentStatus in ["Pending", "pending", "Not Required"]
+          && request.resource.data.status in ["Pending", "Awaiting Payment", "Completed"]);
+      allow update: if isOwner() || isAdmin() || isCashier();
+      allow delete: if isOwner() || isAdmin();
+    }
+
+    match /giftCards/{giftCardId} {
+      allow get: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow list: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow create: if isOwner() || isAdmin() || isCashier() || giftCardCreateIsValid();
+      allow update: if isOwner() || isAdmin() || isCashier();
+      allow delete: if isOwner() || isAdmin();
+    }
+
+    match /giftCardRequests/{requestId} {
+      allow get: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow list: if isOwner() || isAdmin() || isCashier();
+      allow create: if isOwner() || isAdmin() || isCashier() || giftCardCreateIsValid();
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /giftCardRedemptions/{redemptionId} {
+      allow read, create: if isOwner() || isAdmin() || isCashier();
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /giftCardEmailLogs/{logId} {
+      allow read, create: if isOwner() || isAdmin() || isCashier();
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /paymentRequests/{paymentId} {
+      allow get: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow list: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow create: if isOwner() || isAdmin() || isCashier() || paymentRequestCreateIsValid();
+      allow update, delete: if isOwner() || isAdmin() || isCashier();
+    }
+
+    match /receiptEmailLogs/{logId} {
+      allow get: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow list: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow create: if isOwner() || isAdmin() || isCashier()
+        || (isSignedIn()
+          && requestOwnsEmailField("customerEmail")
+          && request.resource.data.paymentReference is string);
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /voidRequests/{requestId} {
+      allow read, create: if isOwner() || isAdmin() || isCashier();
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /cashierLoginLogs/{logId} {
+      allow read: if isOwner() || isAdmin();
+      allow create, update: if isOwner() || isAdmin() || isCashier();
+      allow delete: if isOwner();
+    }
+
+    match /cashierBreakLogs/{logId} {
+      allow read, create: if isOwner() || isAdmin() || isCashier();
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /shiftCloseouts/{closeoutId} {
+      allow read, create: if isOwner() || isAdmin() || isCashier();
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /cashDrawerLogs/{logId} {
+      allow read, create: if isOwner() || isAdmin() || isCashier();
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /adminActivityLogs/{logId} {
+      allow read: if isOwner() || isAdmin();
+      allow create: if isOwner() || isAdmin() || isCashier();
+      allow update, delete: if isOwner();
+    }
+
+    match /adminCloseOutReports/{reportId} {
+      allow read, write: if isOwner() || isAdmin();
+    }
+
+    match /ownerSummaryLogs/{logId} {
+      allow read, write: if isOwner() || isAdmin();
+    }
+
+    match /staffRoles/{roleId} {
+      allow read, write: if isOwner() || isAdmin();
+    }
+
+    match /admins/{uid} {
+      allow get: if isOwner() || isAdmin() || (isSignedIn() && request.auth.uid == uid);
+      allow list: if isOwner() || isAdmin();
+      allow create, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /staffPasswordResetRequests/{requestId} {
+      allow create: if request.resource.data.keys().hasAll(["loginId", "name", "status"])
+        && request.resource.data.loginId is string
+        && request.resource.data.name is string
+        && request.resource.data.status == "Requested";
+      allow read, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /settings/{settingId} {
+      allow get: if settingId == "business" || isOwner() || isAdmin() || isCashier();
+      allow list: if isOwner() || isAdmin();
+      allow create, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /customerAddresses/{addressId} {
+      allow get: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow list: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow create: if isOwner() || isAdmin() || isCashier() || addressCreateIsValid();
+      allow update, delete: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+    }
+
+    match /supportRequests/{requestId} {
+      allow get: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow list: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow create: if isOwner() || isAdmin() || isCashier() || supportRequestCreateIsValid();
+      allow update, delete: if isOwner() || isAdmin() || isCashier();
+    }
+
+    match /customerFeedback/{feedbackId} {
+      allow get: if isOwner() || isAdmin() || isCashier();
+      allow list: if isOwner() || isAdmin() || isCashier();
+      allow create: if isOwner() || isAdmin() || isCashier() || feedbackCreateIsValid();
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /favoriteOrders/{favoriteId} {
+      allow get: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow list: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow create: if isOwner() || isAdmin() || isCashier() || favoriteOrderCreateIsValid();
+      allow update, delete: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+    }
+
+    match /referralLinks/{linkId} {
+      allow get: if isOwner() || isAdmin() || isCashier() || referralLinkOwnerRead();
+      allow list: if isOwner() || isAdmin() || isCashier() || referralLinkOwnerRead();
+      allow create, update, delete: if isOwner() || isAdmin() || isCashier();
+    }
+
+    match /referralRewards/{rewardId} {
+      allow get: if isOwner() || isAdmin() || isCashier() || referralRewardOwnerRead();
+      allow list: if isOwner() || isAdmin() || isCashier() || referralRewardOwnerRead();
+      allow create, update, delete: if isOwner() || isAdmin() || isCashier();
+    }
+
+    match /redemptions/{redemptionId} {
+      allow get: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow list: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow create: if isOwner() || isAdmin() || isCashier();
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /menuCategories/{categoryId} {
+      allow get, list: if true;
+      allow create, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /menuFlavors/{flavorId} {
+      allow get, list: if true;
+      allow create, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /toppings/{toppingId} {
+      allow get, list: if true;
+      allow create, update, delete: if isOwner() || isAdmin();
+    }
+
+    match /cateringRequests/{requestId} {
+      allow get: if isOwner() || isAdmin() || isCashier() || ownsCustomerEmailField();
+      allow list: if isOwner() || isAdmin() || isCashier();
+      allow create: if isSignedIn()
+        && requestOwnsEmailField("customerEmail")
+        && request.resource.data.status == "Requested";
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /inventoryAdjustments/{adjustmentId} {
+      allow read, create: if isOwner() || isAdmin() || isCashier();
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /restocks/{restockId} {
+      allow read, create: if isOwner() || isAdmin() || isCashier();
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /manualPointAdjustments/{adjustmentId} {
+      allow read, create: if isOwner() || isAdmin();
+      allow update, delete: if isOwner();
+    }
+
+    match /disputeDiscounts/{discountId} {
+      allow read, create: if isOwner() || isAdmin() || isCashier();
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /orderNotifications/{notificationId} {
+      allow read, create: if isOwner() || isAdmin() || isCashier();
+      allow update, delete: if isOwner() || isAdmin();
+    }
+
+    match /lowStockAlertLogs/{logId} {
+      allow read, write: if isOwner() || isAdmin();
+    }
+
+    match /backupLogs/{logId} {
+      allow read, write: if isOwner();
+    }
+
+    match /reports/{reportId} {
+      allow read, write: if isOwner();
+    }
+
+    match /exports/{exportId} {
+      allow read, write: if isOwner();
+    }
+
+    match /sensitiveAdminData/{docId} {
+      allow read, write: if isOwner();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

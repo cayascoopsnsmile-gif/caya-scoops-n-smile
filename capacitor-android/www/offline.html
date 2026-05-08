@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Offline | Caya Scoops N Smile</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8e7f4;
+      --card: rgba(255,255,255,0.92);
+      --purple: #5a237b;
+      --lavender: #b98ed8;
+      --cream: #fff8f2;
+      --text: #452157;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top, rgba(185,142,216,0.35), transparent 42%),
+        linear-gradient(180deg, var(--bg), var(--cream));
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .card {
+      width: min(100%, 420px);
+      padding: 28px 24px;
+      border-radius: 22px;
+      background: var(--card);
+      box-shadow: 0 20px 48px rgba(90,35,123,0.16);
+      text-align: center;
+    }
+    img {
+      width: 132px;
+      max-width: 60%;
+      height: auto;
+      margin-bottom: 18px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      color: var(--purple);
+      font-size: 28px;
+    }
+    p {
+      margin: 0 0 18px;
+      line-height: 1.5;
+    }
+    button {
+      width: 100%;
+      min-height: 48px;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #7b2cbf, #4a1f73);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: rgba(69,33,87,0.8);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="./assets/caya-logo.png" alt="Caya Scoops N Smile logo">
+    <h1>You’re Offline</h1>
+    <p>Check your internet connection and try again to reload Caya Scoops N Smile.</p>
+    <button type="button" onclick="window.location.href='https://cayascoopsnsmile.com'">Try Again</button>
+    <div class="note">WiPay checkout and live account features need an internet connection.</div>
+  </div>
+</body>
+</html>

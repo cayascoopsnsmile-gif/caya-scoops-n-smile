@@ -1,0 +1,2386 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Digital Hub</title>
+  <meta name="description" content="CSS Digital Hub is a premium digital gift card marketplace for luxury gift cards, gaming cards, app store cards, digital vouchers, and E-PINs.">
+  <style>
+    :root {
+      --bg: #f6f2fb;
+      --bg-soft: #fcfbfe;
+      --surface: #ffffff;
+      --surface-alt: #f2ecf8;
+      --ink: #181320;
+      --ink-soft: #6d6580;
+      --line: rgba(98, 50, 170, 0.12);
+      --violet: #5f2da8;
+      --violet-deep: #2a163d;
+      --gold: #e8c46d;
+      --gold-deep: #b6842d;
+      --success: #1f8f5f;
+      --warning: #b77a11;
+      --danger: #b33f4f;
+      --shadow: 0 24px 70px rgba(44, 22, 77, 0.12);
+      --shadow-soft: 0 12px 30px rgba(44, 22, 77, 0.08);
+      --radius-xl: 34px;
+      --radius-lg: 26px;
+      --radius-md: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(232, 196, 109, 0.2), transparent 22%),
+        radial-gradient(circle at top right, rgba(95, 45, 168, 0.12), transparent 18%),
+        linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 100%);
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .container {
+      width: min(1220px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      background: var(--violet-deep);
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .topbar .container {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 10px 0;
+      align-items: center;
+    }
+
+    .topbar strong {
+      color: var(--gold);
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 25;
+      background: rgba(255, 255, 255, 0.93);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(95, 45, 168, 0.08);
+    }
+
+    .header-shell {
+      display: grid;
+      gap: 18px;
+      padding: 18px 0 16px;
+    }
+
+    .header-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .brand img {
+      width: 92px;
+      height: 92px;
+      border-radius: 26px;
+      background: #fff;
+      padding: 4px;
+      object-fit: cover;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--line);
+    }
+
+    .brand-copy h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 40px);
+      line-height: 1;
+    }
+
+    .brand-copy p {
+      margin: 7px 0 0;
+      color: var(--ink-soft);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      flex: 1 1 580px;
+      gap: 12px;
+      justify-content: flex-end;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .searchbar {
+      flex: 1 1 320px;
+      min-width: 180px;
+      max-width: 460px;
+      border: 1px solid var(--line);
+      background: var(--surface-alt);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 14px 18px;
+      outline: none;
+    }
+
+    .nav-pill,
+    .action-pill,
+    .button-outline,
+    .button-primary,
+    .button-gold {
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .nav-pill,
+    .action-pill,
+    .button-outline {
+      background: #fff;
+      color: var(--ink-soft);
+      border: 1px solid var(--line);
+    }
+
+    .button-primary {
+      background: var(--violet);
+      color: #fff;
+      border: 1px solid transparent;
+      box-shadow: 0 18px 34px rgba(95, 45, 168, 0.28);
+    }
+
+    .button-gold {
+      background: linear-gradient(135deg, #f4d890 0%, var(--gold) 70%, #d8a849 100%);
+      color: #201523;
+      border: 1px solid rgba(232, 196, 109, 0.3);
+    }
+
+    .button-outline:hover,
+    .nav-pill:hover,
+    .action-pill:hover,
+    .button-primary:hover,
+    .button-gold:hover {
+      transform: translateY(-2px);
+    }
+
+    .header-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .nav-spacer {
+      flex: 1;
+    }
+
+    .hamburger {
+      display: none;
+      background: #fff;
+      border: 1px solid var(--line);
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .hamburger span,
+    .hamburger::before,
+    .hamburger::after {
+      content: "";
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--ink);
+      border-radius: 999px;
+      transition: transform 0.2s ease;
+    }
+
+    .hamburger span {
+      margin: 5px 0;
+    }
+
+    .mobile-menu {
+      display: none;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding-bottom: 14px;
+    }
+
+    .page {
+      display: none;
+      padding: 38px 0 112px;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 26px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      border-radius: 999px;
+      background: rgba(95, 45, 168, 0.08);
+      color: var(--violet);
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    .hero h2,
+    .section-head h2,
+    .page-head h2 {
+      margin: 16px 0 0;
+      font-size: clamp(40px, 6vw, 66px);
+      line-height: 1.04;
+    }
+
+    .hero p,
+    .section-head p,
+    .page-head p {
+      color: var(--ink-soft);
+      line-height: 1.85;
+      font-size: 17px;
+      margin: 18px 0 0;
+      max-width: 740px;
+    }
+
+    .hero-search {
+      margin-top: 24px;
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .hero-search input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 16px 18px;
+      outline: none;
+      background: #fff;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .chip {
+      background: var(--surface-alt);
+      color: var(--ink-soft);
+      border-radius: 999px;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .hero-panel,
+    .surface,
+    .card,
+    .dashboard-panel,
+    .dashboard-card,
+    .status-card,
+    .mini-card,
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius-xl);
+    }
+
+    .hero-panel {
+      padding: 18px;
+      overflow: hidden;
+    }
+
+    .hero-panel-core {
+      border-radius: 30px;
+      background: linear-gradient(145deg, #251338 0%, #5f2da8 48%, #8e63cf 100%);
+      color: #fff;
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel-core::after {
+      content: "";
+      position: absolute;
+      inset: auto -80px -80px auto;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
+    }
+
+    .hero-logo-frame {
+      width: min(260px, 100%);
+      border-radius: 28px;
+      padding: 14px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      margin-bottom: 24px;
+    }
+
+    .hero-logo-frame img {
+      border-radius: 22px;
+      width: 100%;
+    }
+
+    .hero-panel-core h3 {
+      margin: 0;
+      font-size: 36px;
+      line-height: 1.15;
+      max-width: 480px;
+    }
+
+    .hero-panel-core p {
+      margin: 14px 0 0;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.8;
+      font-size: 15px;
+      max-width: 470px;
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .hero-metric {
+      border-radius: 22px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .hero-metric small {
+      display: block;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 8px;
+    }
+
+    .page-block,
+    .section {
+      margin-top: 28px;
+    }
+
+    .section-head,
+    .page-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .page-head h2 {
+      font-size: clamp(34px, 5vw, 58px);
+    }
+
+    .section-tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .grid-4,
+    .grid-3,
+    .grid-2,
+    .grid-occasion,
+    .summary-grid,
+    .dashboard-grid,
+    .panel-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-occasion {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .summary-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .dashboard-grid {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+
+    .panel-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 100%;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .card-tag,
+    .card-label,
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .card-tag {
+      background: rgba(95, 45, 168, 0.08);
+      color: var(--violet);
+    }
+
+    .card-label {
+      color: var(--ink-soft);
+      background: var(--surface-alt);
+    }
+
+    .status-pill.pending { background: rgba(183, 122, 17, 0.12); color: var(--warning); }
+    .status-pill.processing { background: rgba(95, 45, 168, 0.12); color: var(--violet); }
+    .status-pill.paid { background: rgba(31, 143, 95, 0.12); color: var(--success); }
+    .status-pill.delivered { background: rgba(31, 143, 95, 0.12); color: var(--success); }
+    .status-pill.cancelled { background: rgba(179, 63, 79, 0.12); color: var(--danger); }
+
+    .product-visual {
+      height: 176px;
+      border-radius: 26px;
+      padding: 18px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+
+    .product-visual::after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -80px auto;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%);
+    }
+
+    .visual-visa { background: linear-gradient(135deg, #241338 0%, #5f2da8 50%, #e3b95a 100%); }
+    .visual-mastercard { background: linear-gradient(135deg, #261222 0%, #5f2da8 45%, #c87e2a 100%); }
+    .visual-amazon { background: linear-gradient(135deg, #20192f 0%, #6640a8 52%, #d6a34b 100%); }
+    .visual-playstation { background: linear-gradient(135deg, #111827 0%, #4130a8 48%, #7d54d8 100%); }
+    .visual-steam { background: linear-gradient(135deg, #162033 0%, #5231ab 48%, #7b8fed 100%); }
+    .visual-roblox { background: linear-gradient(135deg, #231731 0%, #7444b5 46%, #e4b95e 100%); }
+    .visual-netflix { background: linear-gradient(135deg, #2a1321 0%, #7f1d3f 46%, #c74654 100%); }
+    .visual-googleplay { background: linear-gradient(135deg, #152a26 0%, #2d8f74 46%, #7bd7c3 100%); }
+    .visual-apple { background: linear-gradient(135deg, #1f2028 0%, #44455a 46%, #9ea2ba 100%); }
+    .visual-xbox { background: linear-gradient(135deg, #11271c 0%, #1f8f5f 46%, #5fd28f 100%); }
+    .visual-epin { background: linear-gradient(135deg, #241538 0%, #7635bb 46%, #e8c46d 100%); }
+
+    .visual-brand {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      opacity: 0.82;
+      position: relative;
+      z-index: 1;
+    }
+
+    .visual-title {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.15;
+      max-width: 220px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .visual-chip {
+      align-self: start;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      padding: 8px 12px;
+      font-size: 12px;
+      background: rgba(255,255,255,0.1);
+      position: relative;
+      z-index: 1;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.18;
+    }
+
+    .card-copy,
+    .card-price {
+      color: var(--ink-soft);
+      line-height: 1.75;
+      font-size: 14px;
+    }
+
+    .card select,
+    .input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 14px 15px;
+      border-radius: 18px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .card-actions {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr 1fr;
+      margin-top: auto;
+    }
+
+    .mini-card,
+    .status-card,
+    .dashboard-card,
+    .table-card,
+    .dashboard-panel {
+      padding: 22px;
+    }
+
+    .mini-card {
+      text-align: center;
+      background: var(--surface-alt);
+      box-shadow: none;
+      border-radius: 24px;
+      border: 1px solid rgba(95, 45, 168, 0.06);
+    }
+
+    .mini-card .icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 14px;
+      background: #fff;
+      color: var(--violet);
+      font-weight: 700;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .mini-card strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .occasion-card,
+    .step-card,
+    .trust-card {
+      background: linear-gradient(145deg, #fff 0%, #f4eef9 100%);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 22px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .occasion-card {
+      min-height: 126px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .step-number {
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      background: var(--violet);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      margin-bottom: 16px;
+      box-shadow: 0 18px 34px rgba(95, 45, 168, 0.26);
+    }
+
+    .step-card h3,
+    .trust-card h3,
+    .dashboard-panel h3,
+    .dashboard-card h3,
+    .table-card h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+    }
+
+    .muted {
+      color: var(--ink-soft);
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .summary-value {
+      margin-top: 10px;
+      font-size: 34px;
+      font-weight: 700;
+    }
+
+    .list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .list-item {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      background: var(--surface-alt);
+    }
+
+    .list-item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .list-item h4 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .list-item p {
+      margin: 8px 0 0;
+      color: var(--ink-soft);
+      line-height: 1.75;
+      font-size: 14px;
+    }
+
+    .details-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 14px;
+    }
+
+    .detail-card {
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid rgba(95, 45, 168, 0.06);
+      padding: 14px;
+    }
+
+    .detail-card small {
+      display: block;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .detail-card strong {
+      word-break: break-word;
+    }
+
+    .support-history {
+      margin-top: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .support-ticket {
+      padding: 16px;
+      border-radius: 20px;
+      background: var(--surface-alt);
+      border: 1px solid rgba(95, 45, 168, 0.08);
+    }
+
+    .table-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .admin-order {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      background: var(--surface-alt);
+    }
+
+    .admin-order .fields,
+    .product-admin-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .admin-order textarea {
+      grid-column: 1 / -1;
+    }
+
+    .inline-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .banner {
+      padding: 18px 20px;
+      border-radius: 24px;
+      border: 1px solid rgba(31, 143, 95, 0.18);
+      background: rgba(31, 143, 95, 0.08);
+      color: #15533b;
+      margin-bottom: 18px;
+    }
+
+    .footer {
+      background: linear-gradient(145deg, #1d102a 0%, #331b4e 100%);
+      color: #fff;
+      padding: 34px 0 112px;
+      margin-top: 26px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.7fr 0.7fr 0.7fr 0.95fr;
+      gap: 24px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .footer-brand img {
+      width: 92px;
+      height: 92px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.1);
+      padding: 4px;
+    }
+
+    .footer h3,
+    .footer h4 {
+      margin: 0 0 14px;
+    }
+
+    .footer p,
+    .footer li {
+      color: rgba(255,255,255,0.72);
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .footer ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .socials {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .socials span {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .mobile-nav {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 30;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 22px;
+      background: rgba(24, 19, 32, 0.94);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.22);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .mobile-nav button {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      background: transparent;
+      color: rgba(255,255,255,0.72);
+      padding: 10px 8px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .mobile-nav button.active {
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+    }
+
+    @media (max-width: 1100px) {
+      .hero,
+      .dashboard-grid,
+      .panel-grid,
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-4,
+      .grid-3,
+      .grid-occasion,
+      .summary-grid,
+      .grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 860px) {
+      .searchbar,
+      .desktop-nav {
+        display: none;
+      }
+
+      .hamburger {
+        display: inline-flex;
+      }
+
+      .mobile-menu.open {
+        display: flex;
+      }
+
+      .brand img {
+        width: 78px;
+        height: 78px;
+      }
+
+      .header-actions {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .container {
+        width: min(100%, calc(100% - 22px));
+      }
+
+      .page {
+        padding-top: 28px;
+      }
+
+      .grid-4,
+      .grid-3,
+      .grid-2,
+      .grid-occasion,
+      .summary-grid,
+      .panel-grid,
+      .admin-order .fields,
+      .product-admin-form,
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+      }
+
+      .mobile-nav {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="container">
+      <span>Digital products. Instant delivery. Trusted by modern customers.</span>
+      <strong>Luxury marketplace. Secure orders. Smooth support.</strong>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-shell">
+      <div class="header-main">
+        <a class="brand" href="#" data-page-link="home">
+          <img src="./css-digital-hub-logo.png" alt="CSS Digital Hub logo">
+          <div class="brand-copy">
+            <h1>CSS Digital Hub</h1>
+            <p>Premium Digital Marketplace</p>
+          </div>
+        </a>
+
+        <div class="header-actions">
+          <input class="searchbar" id="global-search" type="text" placeholder="Search for gift cards">
+          <button class="action-pill" data-page-link="account">Sign In</button>
+          <button class="action-pill" data-page-link="cart">Cart (<span id="cart-count">0</span>)</button>
+          <button class="action-pill" data-page-link="track">Track Order</button>
+          <button class="action-pill" data-page-link="support">Support</button>
+          <button class="hamburger" id="menu-toggle" aria-label="Open navigation">
+            <span></span>
+          </button>
+        </div>
+      </div>
+
+      <nav class="header-nav desktop-nav">
+        <button class="nav-pill" data-page-link="home">Home</button>
+        <button class="nav-pill" data-scroll-link="gift-cards">Gift Cards</button>
+        <button class="nav-pill" data-scroll-link="gaming-cards">Gaming Cards</button>
+        <button class="nav-pill" data-scroll-link="app-store-cards">App Store Cards</button>
+        <button class="nav-pill" data-scroll-link="digital-vouchers">Digital Vouchers</button>
+        <button class="nav-pill" data-scroll-link="epins">E-PINs</button>
+        <button class="nav-pill" data-scroll-link="business">Business</button>
+        <div class="nav-spacer"></div>
+        <button class="nav-pill" data-page-link="customer">Customer Dashboard</button>
+        <button class="nav-pill" data-page-link="admin">Admin Dashboard</button>
+      </nav>
+
+      <div class="mobile-menu" id="mobile-menu">
+        <button class="nav-pill" data-page-link="home">Home</button>
+        <button class="nav-pill" data-scroll-link="gift-cards">Gift Cards</button>
+        <button class="nav-pill" data-scroll-link="gaming-cards">Gaming Cards</button>
+        <button class="nav-pill" data-scroll-link="app-store-cards">App Store Cards</button>
+        <button class="nav-pill" data-scroll-link="digital-vouchers">Digital Vouchers</button>
+        <button class="nav-pill" data-scroll-link="epins">E-PINs</button>
+        <button class="nav-pill" data-scroll-link="business">Business</button>
+        <button class="nav-pill" data-page-link="customer">Customer Dashboard</button>
+        <button class="nav-pill" data-page-link="admin">Admin Dashboard</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page active" id="page-home">
+      <div class="container">
+        <div class="hero">
+          <div>
+            <span class="eyebrow">Trusted digital marketplace</span>
+            <h2>Buy premium digital gift cards from trusted brands</h2>
+            <p>
+              CSS Digital Hub is built for customers who want a polished, reliable, and fast shopping experience for
+              gift cards, gaming cards, app store cards, digital vouchers, and E-PINs.
+            </p>
+
+            <div class="hero-search">
+              <input type="text" id="hero-search" placeholder="Search for gift cards">
+              <div class="chips">
+                <span class="chip">Visa Gift Card</span>
+                <span class="chip">PlayStation Store Card</span>
+                <span class="chip">Steam Wallet</span>
+                <span class="chip">Netflix eGift</span>
+                <span class="chip">Google Play</span>
+              </div>
+            </div>
+
+            <div class="hero-actions">
+              <button class="button-primary" data-scroll-link="featured-products">Shop featured products</button>
+              <button class="button-outline" data-page-link="support">Talk to support</button>
+            </div>
+          </div>
+
+          <div class="hero-panel">
+            <div class="hero-panel-core">
+              <div class="hero-logo-frame">
+                <img src="./css-digital-hub-logo.png" alt="CSS Digital Hub logo">
+              </div>
+              <span class="eyebrow" style="background: rgba(255,255,255,0.12); color: #fff;">Featured collection</span>
+              <h3>Luxury digital gifting with instant order visibility</h3>
+              <p>
+                Customers can shop clean card designs, choose values quickly, track status, and view delivered codes
+                inside a polished marketplace experience.
+              </p>
+              <div class="hero-metrics">
+                <div class="hero-metric">
+                  <small>Most popular</small>
+                  <strong>Visa, Amazon, PlayStation</strong>
+                </div>
+                <div class="hero-metric">
+                  <small>Customer flow</small>
+                  <strong>Shop, confirm, receive</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section page-block" id="featured-products">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Featured products</span>
+              <h2 style="font-size: clamp(30px, 4vw, 54px);">Premium gift cards ready to shop</h2>
+              <p>Clean product cards, fixed button alignment, and luxury-styled mockup images built for smooth shopping.</p>
+            </div>
+            <div class="section-tags">
+              <span class="nav-pill">Gift Cards</span>
+              <span class="nav-pill">Gaming Cards</span>
+              <span class="nav-pill">App Store Cards</span>
+              <span class="nav-pill">Digital Vouchers</span>
+            </div>
+          </div>
+          <div class="grid-4" id="featured-grid"></div>
+        </div>
+
+        <div class="section">
+          <div class="surface" style="padding: 24px;">
+            <div class="section-head" style="margin-bottom: 0;">
+              <div>
+                <span class="eyebrow">Best sellers</span>
+                <h2 style="font-size: clamp(28px, 4vw, 46px);">What customers buy most</h2>
+              </div>
+            </div>
+            <div class="grid-4" id="best-seller-grid" style="margin-top: 18px;"></div>
+          </div>
+        </div>
+
+        <div class="section" id="gift-cards">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Gift Cards</span>
+              <h2 style="font-size: clamp(28px, 4vw, 46px);">Most popular gift cards</h2>
+            </div>
+          </div>
+          <div class="grid-4" id="gift-card-grid"></div>
+        </div>
+
+        <div class="section" id="gaming-cards">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Gaming Cards</span>
+              <h2 style="font-size: clamp(28px, 4vw, 46px);">Gaming gift cards</h2>
+            </div>
+          </div>
+          <div class="grid-4" id="gaming-grid"></div>
+        </div>
+
+        <div class="section" id="app-store-cards">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">App Store Cards</span>
+              <h2 style="font-size: clamp(28px, 4vw, 46px);">App store cards</h2>
+            </div>
+          </div>
+          <div class="grid-4" id="app-grid"></div>
+        </div>
+
+        <div class="section" id="digital-vouchers">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Digital Vouchers</span>
+              <h2 style="font-size: clamp(28px, 4vw, 46px);">Digital vouchers</h2>
+            </div>
+          </div>
+          <div class="grid-4" id="voucher-grid"></div>
+        </div>
+
+        <div class="section" id="epins">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">E-PINs</span>
+              <h2 style="font-size: clamp(28px, 4vw, 46px);">E-PIN and top-up products</h2>
+            </div>
+          </div>
+          <div class="grid-4" id="epin-grid"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Occasions</span>
+              <h2 style="font-size: clamp(28px, 4vw, 46px);">Cards for every occasion</h2>
+            </div>
+          </div>
+          <div class="grid-occasion">
+            <div class="occasion-card">Birthdays</div>
+            <div class="occasion-card">Rewards</div>
+            <div class="occasion-card">Celebrations</div>
+            <div class="occasion-card">Business gifting</div>
+            <div class="occasion-card">App purchases</div>
+            <div class="occasion-card">Gaming top-ups</div>
+            <div class="occasion-card">Streaming</div>
+            <div class="occasion-card">Last-minute gifting</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">How it works</span>
+              <h2 style="font-size: clamp(28px, 4vw, 46px);">A smooth and trustworthy flow</h2>
+            </div>
+          </div>
+          <div class="grid-3">
+            <div class="step-card">
+              <div class="step-number">01</div>
+              <h3>Choose your card</h3>
+              <p class="muted">Browse by category, open a premium product card, and select the value you want.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-number">02</div>
+              <h3>Add to cart and confirm</h3>
+              <p class="muted">Review the cart, proceed to checkout, and submit customer, recipient, and order details.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-number">03</div>
+              <h3>Track and receive</h3>
+              <p class="muted">Monitor order status and view delivered codes in the customer dashboard when ready.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" id="business">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Business</span>
+              <h2 style="font-size: clamp(28px, 4vw, 46px);">Business gifting and secure customer delivery</h2>
+              <p>Support teams, client campaigns, rewards, and modern digital fulfillment with a polished premium storefront.</p>
+            </div>
+          </div>
+          <div class="grid-3">
+            <div class="trust-card">
+              <h3>Bulk purchase support</h3>
+              <p class="muted">Organize larger orders cleanly for teams, promotions, and branded reward campaigns.</p>
+            </div>
+            <div class="trust-card">
+              <h3>Visible delivery status</h3>
+              <p class="muted">Customers can see pending, paid, delivered, and cancelled statuses from their dashboard.</p>
+            </div>
+            <div class="trust-card">
+              <h3>Premium storefront look</h3>
+              <p class="muted">Luxury purple, gold, black, and white styling gives the shop a polished fintech feel.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Trust and security</span>
+              <h2 style="font-size: clamp(28px, 4vw, 46px);">Built to feel safe, clear, and professional</h2>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="trust-card">
+              <h3>Order visibility</h3>
+              <p class="muted">Customer and admin dashboards clearly show order stage, details, codes, and support history.</p>
+            </div>
+            <div class="trust-card">
+              <h3>Premium shopping cards</h3>
+              <p class="muted">Every product uses a styled gift card mockup instead of unfinished placeholder boxes.</p>
+            </div>
+            <div class="trust-card">
+              <h3>Clean support flow</h3>
+              <p class="muted">Customers can send support requests with order references and review their ticket history.</p>
+            </div>
+            <div class="trust-card">
+              <h3>Controlled code delivery</h3>
+              <p class="muted">Purchased codes are shown only when the order is confirmed and marked delivered.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-cart">
+      <div class="container">
+        <div class="page-head">
+          <div>
+            <span class="eyebrow">Cart</span>
+            <h2>Your selected gift cards</h2>
+            <p>Review items, selected values, quantities, and totals before checkout.</p>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="dashboard-panel">
+            <h3>Cart items</h3>
+            <div class="list" id="cart-list"></div>
+          </div>
+          <div class="dashboard-panel">
+            <h3>Order summary</h3>
+            <div class="list-item">
+              <p>Total items</p>
+              <div class="summary-value" id="cart-summary-count">0</div>
+            </div>
+            <div class="list-item" style="margin-top: 14px;">
+              <p>Order total</p>
+              <div class="summary-value" id="cart-summary-total">US$0</div>
+            </div>
+            <div class="inline-actions">
+              <button class="button-outline" data-page-link="home">Continue shopping</button>
+              <button class="button-primary" id="go-checkout">Proceed to checkout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-checkout">
+      <div class="container">
+        <div class="page-head">
+          <div>
+            <span class="eyebrow">Checkout</span>
+            <h2>Complete your order</h2>
+            <p>Enter customer details, recipient details, payment method, and order notes.</p>
+          </div>
+        </div>
+
+        <div id="checkout-banner" class="banner hidden"></div>
+
+        <div class="dashboard-grid">
+          <div class="dashboard-panel">
+            <h3>Checkout details</h3>
+            <form id="checkout-form" class="panel-grid">
+              <input class="input" name="customerName" placeholder="Customer name" required>
+              <input class="input" name="email" type="email" placeholder="Email address" required>
+              <input class="input" name="phone" placeholder="Phone number" required>
+              <input class="input" name="recipientEmail" type="email" placeholder="Recipient email" required>
+              <select class="input" name="paymentMethod" required>
+                <option value="">Select payment method</option>
+                <option>Bank Transfer</option>
+                <option>Debit / Credit Card</option>
+                <option>Online Payment</option>
+                <option>Wallet Transfer</option>
+              </select>
+              <input class="input" name="profileName" placeholder="Customer profile display name">
+              <textarea name="orderNotes" placeholder="Order notes"></textarea>
+              <div class="inline-actions" style="grid-column: 1 / -1;">
+                <button class="button-outline" type="button" data-page-link="cart">Back to cart</button>
+                <button class="button-primary" type="submit">Submit order</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="dashboard-panel">
+            <h3>Order summary</h3>
+            <div class="list" id="checkout-summary"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-track">
+      <div class="container">
+        <div class="page-head">
+          <div>
+            <span class="eyebrow">Track order</span>
+            <h2>Search by order number or email</h2>
+            <p>Find order status quickly with a clean lookup flow.</p>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="dashboard-panel">
+            <h3>Track an order</h3>
+            <form id="track-form" class="panel-grid">
+              <input class="input" name="orderNumber" placeholder="Order number">
+              <input class="input" name="email" type="email" placeholder="Email address">
+              <div class="inline-actions" style="grid-column: 1 / -1;">
+                <button class="button-primary" type="submit">Search order</button>
+              </div>
+            </form>
+          </div>
+          <div class="dashboard-panel">
+            <h3>Search result</h3>
+            <div id="track-result" class="muted">No order searched yet.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-support">
+      <div class="container">
+        <div class="page-head">
+          <div>
+            <span class="eyebrow">Support</span>
+            <h2>Contact support</h2>
+            <p>Send a support request with customer details and order reference.</p>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="dashboard-panel">
+            <h3>Submit support request</h3>
+            <form id="support-form" class="panel-grid">
+              <input class="input" name="fullName" placeholder="Full name" required>
+              <input class="input" name="email" type="email" placeholder="Email address" required>
+              <input class="input" name="orderNumber" placeholder="Order number">
+              <textarea name="message" placeholder="Message" required></textarea>
+              <div class="inline-actions" style="grid-column: 1 / -1;">
+                <button class="button-primary" type="submit">Submit support request</button>
+              </div>
+            </form>
+          </div>
+          <div class="dashboard-panel">
+            <h3>Support history</h3>
+            <div id="support-history" class="support-history"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-account">
+      <div class="container">
+        <div class="page-head">
+          <div>
+            <span class="eyebrow">Account</span>
+            <h2>Customer profile and account settings</h2>
+            <p>Set the customer profile details used across checkout, order history, and support.</p>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="dashboard-panel">
+            <h3>Profile details</h3>
+            <form id="profile-form" class="panel-grid">
+              <input class="input" name="name" placeholder="Customer name">
+              <input class="input" name="email" type="email" placeholder="Email address">
+              <input class="input" name="phone" placeholder="Phone number">
+              <input class="input" name="tier" placeholder="Membership tier">
+              <textarea name="address" placeholder="Address or notes"></textarea>
+              <div class="inline-actions" style="grid-column: 1 / -1;">
+                <button class="button-primary" type="submit">Save account settings</button>
+                <button class="button-outline" type="button" data-page-link="customer">Open customer dashboard</button>
+              </div>
+            </form>
+          </div>
+          <div class="dashboard-panel">
+            <h3>Current profile</h3>
+            <div id="profile-preview" class="list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-customer">
+      <div class="container">
+        <div class="page-head">
+          <div>
+            <span class="eyebrow">Customer dashboard</span>
+            <h2>Orders, statuses, codes, and account activity</h2>
+            <p>Review pending orders, delivered orders, purchased codes, support history, and account settings.</p>
+          </div>
+        </div>
+
+        <div class="summary-grid" id="customer-summary"></div>
+
+        <div class="dashboard-grid section">
+          <div class="dashboard-panel">
+            <h3>Customer profile</h3>
+            <div id="customer-profile" class="list"></div>
+          </div>
+          <div class="dashboard-panel">
+            <h3>Purchased codes</h3>
+            <div id="customer-codes" class="list"></div>
+          </div>
+        </div>
+
+        <div class="grid-2 section">
+          <div class="dashboard-panel">
+            <h3>Order history</h3>
+            <div id="customer-orders" class="list"></div>
+          </div>
+          <div class="dashboard-panel">
+            <h3>Support ticket history</h3>
+            <div id="customer-support" class="support-history"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-admin">
+      <div class="container">
+        <div class="page-head">
+          <div>
+            <span class="eyebrow">Admin dashboard</span>
+            <h2>Marketplace management and order delivery controls</h2>
+            <p>Manage products, values, stock codes, orders, support messages, and customer delivery status.</p>
+          </div>
+        </div>
+
+        <div class="summary-grid" id="admin-summary"></div>
+
+        <div class="grid-2 section">
+          <div class="dashboard-panel">
+            <h3>Product management</h3>
+            <form id="product-form" class="product-admin-form">
+              <input class="input" name="id" placeholder="Product ID" required>
+              <input class="input" name="name" placeholder="Product name" required>
+              <input class="input" name="category" placeholder="Category" required>
+              <input class="input" name="priceRange" placeholder="Price range" required>
+              <input class="input" name="visualClass" placeholder="Visual class" required>
+              <input class="input" name="values" placeholder="Gift card values e.g. 10,20,25,50,100" required>
+              <input class="input" name="stock" placeholder="Stock level" required>
+              <input class="input" name="imageTitle" placeholder="Card image title" required>
+              <div class="inline-actions" style="grid-column: 1 / -1;">
+                <button class="button-primary" type="submit">Save product</button>
+              </div>
+            </form>
+            <div id="admin-products" class="table-grid"></div>
+          </div>
+
+          <div class="dashboard-panel">
+            <h3>Support message management</h3>
+            <div id="admin-support" class="table-grid"></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="table-card">
+            <h3>Admin order management</h3>
+            <div id="admin-orders" class="table-grid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src="./css-digital-hub-logo.png" alt="CSS Digital Hub logo">
+          <div>
+            <h3>CSS Digital Hub</h3>
+            <p>Luxury digital gift cards and prepaid products</p>
+          </div>
+        </div>
+        <p style="margin-top: 16px;">
+          Premium digital marketplace for gift cards, gaming cards, app store cards, digital vouchers, and E-PINs
+          with clean shopping, order visibility, and professional dashboards.
+        </p>
+        <div class="socials">
+          <span>FB</span>
+          <span>IG</span>
+          <span>X</span>
+          <span>TT</span>
+        </div>
+      </div>
+
+      <div>
+        <h4>About</h4>
+        <ul>
+          <li>Company</li>
+          <li>Business gifting</li>
+          <li>Marketplace</li>
+          <li>Customer dashboard</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Support</h4>
+        <ul>
+          <li>Help center</li>
+          <li>Track order</li>
+          <li>Order support</li>
+          <li>Support requests</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li>Privacy</li>
+          <li>Terms</li>
+          <li>Refund policy</li>
+          <li>Customer policy</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Newsletter</h4>
+        <input class="input" type="email" placeholder="Email address" style="background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.12);">
+        <div style="height: 12px;"></div>
+        <button class="button-gold" style="width: 100%;">Sign up</button>
+        <p style="margin-top: 16px;">support@cssdigitalhub.com</p>
+        <p>+1 (868) 555-0142</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="mobile-nav" id="mobile-nav">
+    <button data-page-link="home" class="active">Home</button>
+    <button data-scroll-link="featured-products">Shop</button>
+    <button data-page-link="cart">Cart</button>
+    <button data-page-link="customer">Orders</button>
+    <button data-page-link="account">Account</button>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "cssDigitalHubMarketplaceState";
+
+    const defaultProducts = [
+      { id: "visa-gift-card", name: "Visa Gift Card", category: "Gift Cards", priceRange: "US$10 - US$100", visualClass: "visual-visa", imageTitle: "Visa Gift Card", values: [10, 20, 25, 30, 40, 50, 60, 75, 80, 90, 100], stock: 40, featured: true, bestSeller: true },
+      { id: "mastercard-digital", name: "Mastercard Digital Gift Card", category: "Gift Cards", priceRange: "US$10 - US$100", visualClass: "visual-mastercard", imageTitle: "Mastercard Digital Gift Card", values: [10, 20, 25, 30, 40, 50, 75, 100], stock: 28, featured: true, bestSeller: false },
+      { id: "amazon-egift", name: "Amazon eGift Card", category: "Digital Vouchers", priceRange: "US$10 - US$100", visualClass: "visual-amazon", imageTitle: "Amazon eGift Card", values: [10, 20, 25, 50, 75, 100], stock: 33, featured: true, bestSeller: true },
+      { id: "playstation-store", name: "PlayStation Store Card", category: "Gaming Cards", priceRange: "US$10 - US$100", visualClass: "visual-playstation", imageTitle: "PlayStation Store Card", values: [10, 20, 25, 50, 75, 100], stock: 26, featured: true, bestSeller: true },
+      { id: "steam-wallet", name: "Steam Wallet", category: "Gaming Cards", priceRange: "US$10 - US$100", visualClass: "visual-steam", imageTitle: "Steam Wallet", values: [10, 20, 25, 50, 75, 100], stock: 30, featured: false, bestSeller: true },
+      { id: "roblox-card", name: "Roblox Card", category: "Gaming Cards", priceRange: "US$10 - US$100", visualClass: "visual-roblox", imageTitle: "Roblox Card", values: [10, 20, 25, 40, 50, 75, 100], stock: 31, featured: false, bestSeller: true },
+      { id: "netflix-egift", name: "Netflix eGift", category: "Digital Vouchers", priceRange: "US$10 - US$100", visualClass: "visual-netflix", imageTitle: "Netflix eGift", values: [15, 25, 30, 50, 75, 100], stock: 22, featured: false, bestSeller: true },
+      { id: "google-play", name: "Google Play", category: "App Store Cards", priceRange: "US$10 - US$100", visualClass: "visual-googleplay", imageTitle: "Google Play", values: [10, 20, 25, 50, 75, 100], stock: 24, featured: false, bestSeller: true },
+      { id: "apple-app-store", name: "Apple App Store", category: "App Store Cards", priceRange: "US$10 - US$100", visualClass: "visual-apple", imageTitle: "Apple App Store", values: [10, 20, 25, 30, 50, 100], stock: 18, featured: false, bestSeller: true },
+      { id: "xbox-gift-card", name: "Xbox Gift Card", category: "Gaming Cards", priceRange: "US$10 - US$100", visualClass: "visual-xbox", imageTitle: "Xbox Gift Card", values: [10, 20, 25, 50, 75, 100], stock: 19, featured: false, bestSeller: true },
+      { id: "topup-epin", name: "Digital Voucher E-PIN", category: "E-PINs", priceRange: "US$10 - US$100", visualClass: "visual-epin", imageTitle: "Digital Voucher E-PIN", values: [10, 20, 25, 50, 100], stock: 45, featured: false, bestSeller: false }
+    ];
+
+    const defaultState = {
+      profile: {
+        name: "CSS Premium Customer",
+        email: "customer@cssdigitalhub.com",
+        phone: "+1 (868) 555-0190",
+        tier: "Gold Member",
+        address: "Port of Spain, Trinidad and Tobago"
+      },
+      cart: [],
+      orders: [
+        {
+          orderNumber: "CSS-42018",
+          customerName: "CSS Premium Customer",
+          email: "customer@cssdigitalhub.com",
+          phone: "+1 (868) 555-0190",
+          recipientEmail: "friend@example.com",
+          paymentMethod: "Bank Transfer",
+          orderNotes: "Birthday delivery",
+          status: "Delivered",
+          total: 50,
+          items: [{ productId: "playstation-store", name: "PlayStation Store Card", category: "Gaming Cards", value: 50, quantity: 1 }],
+          code: "PSN-84TK-19QW-66AZ",
+          pin: "9921",
+          createdAt: "2026-05-04 09:30"
+        },
+        {
+          orderNumber: "CSS-42019",
+          customerName: "CSS Premium Customer",
+          email: "customer@cssdigitalhub.com",
+          phone: "+1 (868) 555-0190",
+          recipientEmail: "family@example.com",
+          paymentMethod: "Debit / Credit Card",
+          orderNotes: "Waiting on confirmation",
+          status: "Pending",
+          total: 25,
+          items: [{ productId: "amazon-egift", name: "Amazon eGift Card", category: "Digital Vouchers", value: 25, quantity: 1 }],
+          code: "",
+          pin: "",
+          createdAt: "2026-05-04 16:45"
+        }
+      ],
+      supportTickets: [
+        {
+          id: "SUP-1021",
+          fullName: "CSS Premium Customer",
+          email: "customer@cssdigitalhub.com",
+          orderNumber: "CSS-42019",
+          message: "Please update me when my Amazon eGift Card is ready.",
+          status: "Open",
+          createdAt: "2026-05-04 17:10"
+        }
+      ],
+      products: defaultProducts
+    };
+
+    let state = loadState();
+    let productEditingId = null;
+
+    function loadState() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return structuredClone(defaultState);
+      try {
+        const parsed = JSON.parse(stored);
+        return {
+          ...structuredClone(defaultState),
+          ...parsed,
+          profile: { ...structuredClone(defaultState).profile, ...(parsed.profile || {}) },
+          cart: parsed.cart || [],
+          orders: parsed.orders || structuredClone(defaultState).orders,
+          supportTickets: parsed.supportTickets || structuredClone(defaultState).supportTickets,
+          products: parsed.products || structuredClone(defaultState).products
+        };
+      } catch (error) {
+        return structuredClone(defaultState);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function formatMoney(value) {
+      return `US$${Number(value).toFixed(0)}`;
+    }
+
+    function todayStamp() {
+      const date = new Date();
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+    }
+
+    function orderNumber() {
+      return `CSS-${Math.floor(10000 + Math.random() * 90000)}`;
+    }
+
+    function setPage(pageId) {
+      document.querySelectorAll(".page").forEach((page) => page.classList.toggle("active", page.id === `page-${pageId}`));
+      document.querySelectorAll("[data-page-link]").forEach((button) => button.classList.toggle("active", button.dataset.pageLink === pageId && button.closest(".mobile-nav")));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      document.getElementById("mobile-menu").classList.remove("open");
+    }
+
+    function scrollToHomeSection(sectionId) {
+      setPage("home");
+      setTimeout(() => {
+        document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 80);
+    }
+
+    function productCard(product) {
+      const values = product.values.map((value) => `<option value="${value}">${formatMoney(value)}</option>`).join("");
+      return `
+        <article class="card">
+          <div class="card-top">
+            <span class="card-tag">${product.category}</span>
+            <span class="card-label">${product.imageTitle}</span>
+          </div>
+          <div class="product-visual ${product.visualClass}">
+            <span class="visual-brand">CSS Digital Hub</span>
+            <div class="visual-title">${product.name}</div>
+            <span class="visual-chip">${product.category}</span>
+          </div>
+          <div>
+            <h3>${product.name}</h3>
+            <div class="card-price">${product.priceRange}</div>
+          </div>
+          <label class="muted" style="font-weight: 600;">Select value</label>
+          <select data-value-select="${product.id}">${values}</select>
+          <div class="card-actions">
+            <button class="button-outline" data-buy-now="${product.id}">Buy Now</button>
+            <button class="button-primary" data-add-cart="${product.id}">Add to Cart</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderHome() {
+      const featured = state.products.filter((product) => product.featured).slice(0, 4);
+      const bestSellers = state.products.filter((product) => product.bestSeller).slice(0, 4);
+      const renderShelf = (category, targetId) => {
+        document.getElementById(targetId).innerHTML = state.products
+          .filter((product) => product.category === category)
+          .map(productCard)
+          .join("");
+      };
+
+      document.getElementById("featured-grid").innerHTML = featured.map(productCard).join("");
+      document.getElementById("best-seller-grid").innerHTML = bestSellers.map((product) => `
+        <div class="mini-card">
+          <div class="icon">${product.name.split(" ")[0].slice(0, 3).toUpperCase()}</div>
+          <strong>${product.name}</strong>
+          <div class="muted">${product.category}</div>
+        </div>
+      `).join("");
+
+      renderShelf("Gift Cards", "gift-card-grid");
+      renderShelf("Gaming Cards", "gaming-grid");
+      renderShelf("App Store Cards", "app-grid");
+      renderShelf("Digital Vouchers", "voucher-grid");
+      renderShelf("E-PINs", "epin-grid");
+    }
+
+    function cartTotals() {
+      const itemCount = state.cart.reduce((sum, item) => sum + item.quantity, 0);
+      const total = state.cart.reduce((sum, item) => sum + item.value * item.quantity, 0);
+      return { itemCount, total };
+    }
+
+    function updateCartCount() {
+      const { itemCount } = cartTotals();
+      document.getElementById("cart-count").textContent = itemCount;
+    }
+
+    function renderCart() {
+      const cartList = document.getElementById("cart-list");
+      const { itemCount, total } = cartTotals();
+
+      document.getElementById("cart-summary-count").textContent = itemCount;
+      document.getElementById("cart-summary-total").textContent = formatMoney(total);
+
+      if (!state.cart.length) {
+        cartList.innerHTML = `<div class="list-item"><p class="muted">Your cart is empty. Add a product from the homepage to continue.</p></div>`;
+        return;
+      }
+
+      cartList.innerHTML = state.cart.map((item, index) => `
+        <div class="list-item">
+          <div class="list-item-head">
+            <div>
+              <h4>${item.name}</h4>
+              <p>${item.category} · Selected value ${formatMoney(item.value)}</p>
+            </div>
+            <button class="button-outline" data-remove-cart="${index}">Remove item</button>
+          </div>
+          <div class="details-grid">
+            <div class="detail-card">
+              <small>Quantity</small>
+              <div class="inline-actions">
+                <button class="button-outline" data-qty-down="${index}">-</button>
+                <strong>${item.quantity}</strong>
+                <button class="button-outline" data-qty-up="${index}">+</button>
+              </div>
+            </div>
+            <div class="detail-card">
+              <small>Line total</small>
+              <strong>${formatMoney(item.value * item.quantity)}</strong>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderCheckout() {
+      const summary = document.getElementById("checkout-summary");
+      const banner = document.getElementById("checkout-banner");
+      banner.classList.add("hidden");
+      banner.textContent = "";
+
+      if (!state.cart.length) {
+        summary.innerHTML = `<div class="list-item"><p class="muted">Your cart is empty. Add products before checkout.</p></div>`;
+        return;
+      }
+
+      summary.innerHTML = state.cart.map((item) => `
+        <div class="list-item">
+          <div class="list-item-head">
+            <div>
+              <h4>${item.name}</h4>
+              <p>${item.category}</p>
+            </div>
+            <strong>${formatMoney(item.value * item.quantity)}</strong>
+          </div>
+          <p>Selected value: ${formatMoney(item.value)} · Quantity: ${item.quantity}</p>
+        </div>
+      `).join("") + `
+        <div class="list-item">
+          <div class="list-item-head">
+            <h4>Order total</h4>
+            <strong>${formatMoney(cartTotals().total)}</strong>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTrackResult(result) {
+      const target = document.getElementById("track-result");
+      if (!result) {
+        target.innerHTML = `<div class="muted">No matching order found.</div>`;
+        return;
+      }
+
+      target.innerHTML = `
+        <div class="list-item">
+          <div class="list-item-head">
+            <div>
+              <h4>${result.orderNumber}</h4>
+              <p>${result.customerName} · ${result.email}</p>
+            </div>
+            <span class="status-pill ${result.status.toLowerCase()}">${result.status}</span>
+          </div>
+          <div class="details-grid">
+            <div class="detail-card"><small>Payment method</small><strong>${result.paymentMethod}</strong></div>
+            <div class="detail-card"><small>Total</small><strong>${formatMoney(result.total)}</strong></div>
+            <div class="detail-card"><small>Recipient</small><strong>${result.recipientEmail}</strong></div>
+            <div class="detail-card"><small>Created</small><strong>${result.createdAt}</strong></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSupport() {
+      const target = document.getElementById("support-history");
+      if (!state.supportTickets.length) {
+        target.innerHTML = `<div class="support-ticket"><div class="muted">No support messages submitted yet.</div></div>`;
+        return;
+      }
+
+      target.innerHTML = state.supportTickets.map((ticket) => `
+        <div class="support-ticket">
+          <div class="list-item-head">
+            <div>
+              <strong>${ticket.id}</strong>
+              <p>${ticket.fullName} · ${ticket.email}</p>
+            </div>
+            <span class="status-pill processing">${ticket.status}</span>
+          </div>
+          <p>Order number: ${ticket.orderNumber || "Not provided"}</p>
+          <p>${ticket.message}</p>
+        </div>
+      `).join("");
+    }
+
+    function renderProfile() {
+      const preview = document.getElementById("profile-preview");
+      const customerProfile = document.getElementById("customer-profile");
+      const profile = state.profile;
+
+      const profileMarkup = `
+        <div class="list-item">
+          <div class="list-item-head">
+            <div>
+              <h4>${profile.name || "Customer profile"}</h4>
+              <p>${profile.email || "No email saved"}</p>
+            </div>
+            <span class="card-tag">${profile.tier || "Member"}</span>
+          </div>
+          <div class="details-grid">
+            <div class="detail-card"><small>Phone</small><strong>${profile.phone || "Not set"}</strong></div>
+            <div class="detail-card"><small>Tier</small><strong>${profile.tier || "Not set"}</strong></div>
+            <div class="detail-card" style="grid-column: 1 / -1;"><small>Account settings</small><strong>${profile.address || "No address or notes saved yet."}</strong></div>
+          </div>
+        </div>
+      `;
+
+      preview.innerHTML = profileMarkup;
+      customerProfile.innerHTML = profileMarkup;
+
+      const form = document.getElementById("profile-form");
+      form.name.value = profile.name || "";
+      form.email.value = profile.email || "";
+      form.phone.value = profile.phone || "";
+      form.tier.value = profile.tier || "";
+      form.address.value = profile.address || "";
+    }
+
+    function renderCustomerDashboard() {
+      const summaryTarget = document.getElementById("customer-summary");
+      const ordersTarget = document.getElementById("customer-orders");
+      const codesTarget = document.getElementById("customer-codes");
+      const supportTarget = document.getElementById("customer-support");
+
+      const pending = state.orders.filter((order) => order.status === "Pending" || order.status === "Processing");
+      const delivered = state.orders.filter((order) => order.status === "Delivered");
+      const paid = state.orders.filter((order) => order.status === "Paid");
+      const revenue = state.orders.reduce((sum, order) => sum + order.total, 0);
+
+      summaryTarget.innerHTML = `
+        <div class="status-card"><div class="muted">Total orders</div><div class="summary-value">${state.orders.length}</div></div>
+        <div class="status-card"><div class="muted">Pending orders</div><div class="summary-value">${pending.length}</div></div>
+        <div class="status-card"><div class="muted">Delivered orders</div><div class="summary-value">${delivered.length}</div></div>
+        <div class="status-card"><div class="muted">Lifetime spend</div><div class="summary-value">${formatMoney(revenue)}</div></div>
+      `;
+
+      ordersTarget.innerHTML = state.orders.map((order) => `
+        <div class="list-item">
+          <div class="list-item-head">
+            <div>
+              <h4>${order.orderNumber}</h4>
+              <p>${order.items.map((item) => `${item.name} ${formatMoney(item.value)} x${item.quantity}`).join(", ")}</p>
+            </div>
+            <span class="status-pill ${order.status.toLowerCase()}">${order.status}</span>
+          </div>
+          <div class="details-grid">
+            <div class="detail-card"><small>Total</small><strong>${formatMoney(order.total)}</strong></div>
+            <div class="detail-card"><small>Payment method</small><strong>${order.paymentMethod}</strong></div>
+            <div class="detail-card"><small>Recipient email</small><strong>${order.recipientEmail}</strong></div>
+            <div class="detail-card"><small>Created</small><strong>${order.createdAt}</strong></div>
+          </div>
+        </div>
+      `).join("");
+
+      const deliveredWithCodes = state.orders.filter((order) => order.status === "Delivered" && order.code);
+      codesTarget.innerHTML = deliveredWithCodes.length
+        ? deliveredWithCodes.map((order) => `
+            <div class="list-item">
+              <div class="list-item-head">
+                <div>
+                  <h4>${order.orderNumber}</h4>
+                  <p>${order.items.map((item) => item.name).join(", ")}</p>
+                </div>
+                <span class="status-pill delivered">Delivered</span>
+              </div>
+              <div class="details-grid">
+                <div class="detail-card"><small>Gift card code</small><strong>${order.code}</strong></div>
+                <div class="detail-card"><small>PIN</small><strong>${order.pin || "Not required"}</strong></div>
+              </div>
+            </div>
+          `).join("")
+        : `<div class="list-item"><p class="muted">Delivered codes appear here after the order is marked delivered.</p></div>`;
+
+      supportTarget.innerHTML = state.supportTickets.length
+        ? state.supportTickets.map((ticket) => `
+            <div class="support-ticket">
+              <div class="list-item-head">
+                <strong>${ticket.id}</strong>
+                <span class="status-pill processing">${ticket.status}</span>
+              </div>
+              <p>${ticket.message}</p>
+            </div>
+          `).join("")
+        : `<div class="support-ticket"><div class="muted">No support tickets yet.</div></div>`;
+    }
+
+    function renderAdminSummary() {
+      const target = document.getElementById("admin-summary");
+      const pending = state.orders.filter((order) => order.status === "Pending" || order.status === "Processing").length;
+      const delivered = state.orders.filter((order) => order.status === "Delivered").length;
+      const revenue = state.orders.reduce((sum, order) => sum + order.total, 0);
+
+      target.innerHTML = `
+        <div class="status-card"><div class="muted">Total orders</div><div class="summary-value">${state.orders.length}</div></div>
+        <div class="status-card"><div class="muted">Pending orders</div><div class="summary-value">${pending}</div></div>
+        <div class="status-card"><div class="muted">Delivered orders</div><div class="summary-value">${delivered}</div></div>
+        <div class="status-card"><div class="muted">Total revenue</div><div class="summary-value">${formatMoney(revenue)}</div></div>
+      `;
+    }
+
+    function renderAdminProducts() {
+      const target = document.getElementById("admin-products");
+      target.innerHTML = state.products.map((product) => `
+        <div class="admin-order">
+          <div class="list-item-head">
+            <div>
+              <h4>${product.name}</h4>
+              <p>${product.category} · ${product.priceRange}</p>
+            </div>
+            <div class="inline-actions">
+              <button class="button-outline" data-edit-product="${product.id}">Edit</button>
+              <button class="button-outline" data-delete-product="${product.id}">Delete</button>
+            </div>
+          </div>
+          <div class="details-grid">
+            <div class="detail-card"><small>Stock</small><strong>${product.stock}</strong></div>
+            <div class="detail-card"><small>Values</small><strong>${product.values.join(", ")}</strong></div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderAdminSupport() {
+      const target = document.getElementById("admin-support");
+      target.innerHTML = state.supportTickets.length
+        ? state.supportTickets.map((ticket) => `
+            <div class="admin-order">
+              <div class="list-item-head">
+                <div>
+                  <h4>${ticket.id}</h4>
+                  <p>${ticket.fullName} · ${ticket.email}</p>
+                </div>
+                <span class="status-pill processing">${ticket.status}</span>
+              </div>
+              <p>Order number: ${ticket.orderNumber || "Not provided"}</p>
+              <p>${ticket.message}</p>
+            </div>
+          `).join("")
+        : `<div class="admin-order"><p class="muted">No support messages yet.</p></div>`;
+    }
+
+    function renderAdminOrders() {
+      const target = document.getElementById("admin-orders");
+
+      target.innerHTML = state.orders.map((order) => `
+        <div class="admin-order">
+          <div class="list-item-head">
+            <div>
+              <h4>${order.orderNumber}</h4>
+              <p>${order.customerName} · ${order.email}</p>
+            </div>
+            <span class="status-pill ${order.status.toLowerCase()}">${order.status}</span>
+          </div>
+          <div class="details-grid">
+            <div class="detail-card"><small>Product</small><strong>${order.items.map((item) => `${item.name} ${formatMoney(item.value)} x${item.quantity}`).join(", ")}</strong></div>
+            <div class="detail-card"><small>Payment method</small><strong>${order.paymentMethod}</strong></div>
+            <div class="detail-card"><small>Recipient email</small><strong>${order.recipientEmail}</strong></div>
+            <div class="detail-card"><small>Total</small><strong>${formatMoney(order.total)}</strong></div>
+            <div class="detail-card" style="grid-column: 1 / -1;"><small>Order notes</small><strong>${order.orderNotes || "No notes provided"}</strong></div>
+          </div>
+          <div class="fields">
+            <select class="input" data-order-status="${order.orderNumber}">
+              ${["Pending", "Processing", "Paid", "Delivered", "Cancelled"].map((status) => `<option value="${status}" ${status === order.status ? "selected" : ""}>${status}</option>`).join("")}
+            </select>
+            <input class="input" data-order-code="${order.orderNumber}" placeholder="Gift card code" value="${order.code || ""}">
+            <input class="input" data-order-pin="${order.orderNumber}" placeholder="PIN" value="${order.pin || ""}">
+            <input class="input" value="${order.phone}" disabled>
+          </div>
+          <div class="inline-actions">
+            <button class="button-primary" data-save-order="${order.orderNumber}">Save order</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderAll() {
+      renderHome();
+      updateCartCount();
+      renderCart();
+      renderCheckout();
+      renderSupport();
+      renderProfile();
+      renderCustomerDashboard();
+      renderAdminSummary();
+      renderAdminProducts();
+      renderAdminSupport();
+      renderAdminOrders();
+      saveState();
+    }
+
+    function findProduct(id) {
+      return state.products.find((product) => product.id === id);
+    }
+
+    function addToCart(productId, immediateCheckout = false) {
+      const product = findProduct(productId);
+      if (!product) return;
+      const select = document.querySelector(`[data-value-select="${productId}"]`);
+      const value = Number(select?.value || product.values[0]);
+
+      const existing = state.cart.find((item) => item.productId === productId && item.value === value);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        state.cart.push({
+          productId,
+          name: product.name,
+          category: product.category,
+          value,
+          quantity: 1
+        });
+      }
+
+      renderAll();
+      setPage(immediateCheckout ? "checkout" : "cart");
+    }
+
+    function fillProductForm(product = null) {
+      const form = document.getElementById("product-form");
+      productEditingId = product ? product.id : null;
+      form.id.value = product?.id || "";
+      form.name.value = product?.name || "";
+      form.category.value = product?.category || "";
+      form.priceRange.value = product?.priceRange || "US$10 - US$100";
+      form.visualClass.value = product?.visualClass || "visual-visa";
+      form.values.value = product?.values?.join(",") || "10,20,25,50,100";
+      form.stock.value = product?.stock ?? 10;
+      form.imageTitle.value = product?.imageTitle || "";
+    }
+
+    document.addEventListener("click", (event) => {
+      const pageButton = event.target.closest("[data-page-link]");
+      if (pageButton) {
+        setPage(pageButton.dataset.pageLink);
+      }
+
+      const scrollButton = event.target.closest("[data-scroll-link]");
+      if (scrollButton) {
+        scrollToHomeSection(scrollButton.dataset.scrollLink);
+      }
+
+      if (event.target.closest("#menu-toggle")) {
+        document.getElementById("mobile-menu").classList.toggle("open");
+      }
+
+      const addButton = event.target.closest("[data-add-cart]");
+      if (addButton) {
+        addToCart(addButton.dataset.addCart, false);
+      }
+
+      const buyButton = event.target.closest("[data-buy-now]");
+      if (buyButton) {
+        addToCart(buyButton.dataset.buyNow, true);
+      }
+
+      const removeButton = event.target.closest("[data-remove-cart]");
+      if (removeButton) {
+        state.cart.splice(Number(removeButton.dataset.removeCart), 1);
+        renderAll();
+      }
+
+      const qtyUp = event.target.closest("[data-qty-up]");
+      if (qtyUp) {
+        state.cart[Number(qtyUp.dataset.qtyUp)].quantity += 1;
+        renderAll();
+      }
+
+      const qtyDown = event.target.closest("[data-qty-down]");
+      if (qtyDown) {
+        const item = state.cart[Number(qtyDown.dataset.qtyDown)];
+        item.quantity -= 1;
+        if (item.quantity <= 0) state.cart.splice(Number(qtyDown.dataset.qtyDown), 1);
+        renderAll();
+      }
+
+      if (event.target.closest("#go-checkout")) {
+        setPage("checkout");
+      }
+
+      const saveOrder = event.target.closest("[data-save-order]");
+      if (saveOrder) {
+        const orderNumberKey = saveOrder.dataset.saveOrder;
+        const order = state.orders.find((item) => item.orderNumber === orderNumberKey);
+        if (!order) return;
+        order.status = document.querySelector(`[data-order-status="${orderNumberKey}"]`).value;
+        order.code = document.querySelector(`[data-order-code="${orderNumberKey}"]`).value.trim();
+        order.pin = document.querySelector(`[data-order-pin="${orderNumberKey}"]`).value.trim();
+        renderAll();
+      }
+
+      const editProduct = event.target.closest("[data-edit-product]");
+      if (editProduct) {
+        fillProductForm(findProduct(editProduct.dataset.editProduct));
+        setPage("admin");
+      }
+
+      const deleteProduct = event.target.closest("[data-delete-product]");
+      if (deleteProduct) {
+        state.products = state.products.filter((product) => product.id !== deleteProduct.dataset.deleteProduct);
+        renderAll();
+        fillProductForm();
+      }
+    });
+
+    document.getElementById("checkout-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!state.cart.length) {
+        alert("Add items to cart before checking out.");
+        return;
+      }
+
+      const formData = new FormData(event.currentTarget);
+      const number = orderNumber();
+      const order = {
+        orderNumber: number,
+        customerName: formData.get("customerName"),
+        email: formData.get("email"),
+        phone: formData.get("phone"),
+        recipientEmail: formData.get("recipientEmail"),
+        paymentMethod: formData.get("paymentMethod"),
+        orderNotes: formData.get("orderNotes"),
+        status: "Paid",
+        total: cartTotals().total,
+        items: state.cart.map((item) => ({ ...item })),
+        code: "",
+        pin: "",
+        createdAt: todayStamp()
+      };
+
+      state.profile.name = formData.get("profileName") || formData.get("customerName");
+      state.profile.email = formData.get("email");
+      state.profile.phone = formData.get("phone");
+      state.orders.unshift(order);
+      state.cart = [];
+      renderAll();
+
+      const banner = document.getElementById("checkout-banner");
+      banner.classList.remove("hidden");
+      banner.textContent = `Order confirmed. Your order number is ${number}.`;
+      event.currentTarget.reset();
+      setPage("checkout");
+    });
+
+    document.getElementById("support-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      state.supportTickets.unshift({
+        id: `SUP-${Math.floor(1000 + Math.random() * 9000)}`,
+        fullName: formData.get("fullName"),
+        email: formData.get("email"),
+        orderNumber: formData.get("orderNumber"),
+        message: formData.get("message"),
+        status: "Open",
+        createdAt: todayStamp()
+      });
+      renderAll();
+      event.currentTarget.reset();
+    });
+
+    document.getElementById("profile-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      state.profile = {
+        name: formData.get("name"),
+        email: formData.get("email"),
+        phone: formData.get("phone"),
+        tier: formData.get("tier"),
+        address: formData.get("address")
+      };
+      renderAll();
+    });
+
+    document.getElementById("track-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      const orderNumberQuery = String(formData.get("orderNumber") || "").trim().toLowerCase();
+      const emailQuery = String(formData.get("email") || "").trim().toLowerCase();
+      const result = state.orders.find((order) =>
+        (orderNumberQuery && order.orderNumber.toLowerCase() === orderNumberQuery) ||
+        (emailQuery && order.email.toLowerCase() === emailQuery)
+      );
+      renderTrackResult(result);
+    });
+
+    document.getElementById("product-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      const product = {
+        id: String(formData.get("id")).trim(),
+        name: String(formData.get("name")).trim(),
+        category: String(formData.get("category")).trim(),
+        priceRange: String(formData.get("priceRange")).trim(),
+        visualClass: String(formData.get("visualClass")).trim(),
+        imageTitle: String(formData.get("imageTitle")).trim(),
+        values: String(formData.get("values")).split(",").map((value) => Number(value.trim())).filter(Boolean),
+        stock: Number(formData.get("stock")) || 0,
+        featured: true,
+        bestSeller: false
+      };
+
+      const existingIndex = state.products.findIndex((item) => item.id === (productEditingId || product.id));
+      if (existingIndex >= 0) {
+        const current = state.products[existingIndex];
+        state.products[existingIndex] = { ...current, ...product };
+      } else {
+        state.products.unshift(product);
+      }
+
+      productEditingId = null;
+      event.currentTarget.reset();
+      fillProductForm();
+      renderAll();
+    });
+
+    document.getElementById("global-search").addEventListener("input", (event) => {
+      const term = event.target.value.toLowerCase().trim();
+      document.querySelectorAll("#page-home .card").forEach((card) => {
+        const matches = card.textContent.toLowerCase().includes(term);
+        card.style.display = matches ? "" : "none";
+      });
+    });
+
+    document.getElementById("hero-search").addEventListener("input", (event) => {
+      const term = event.target.value.toLowerCase().trim();
+      document.querySelectorAll("#page-home .card").forEach((card) => {
+        const matches = card.textContent.toLowerCase().includes(term);
+        card.style.display = matches ? "" : "none";
+      });
+    });
+
+    fillProductForm();
+    renderTrackResult(null);
+    renderAll();
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Caya Scoops N Smile</string>
+    <string name="title_activity_main">Caya Scoops N Smile</string>
+    <string name="package_name">com.cayascoopsnsmile.customer</string>
+    <string name="custom_url_scheme">com.cayascoopsnsmile.customer</string>
+</resources>
