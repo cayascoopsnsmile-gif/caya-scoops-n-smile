@@ -24,17 +24,23 @@ service cloud.firestore {
     }
 
     function hasStaffRole(role) {
-      return isSignedIn()
-        && exists(/databases/$(database)/documents/staffRoles/$(signedInEmail()))
-        && get(/databases/$(database)/documents/staffRoles/$(signedInEmail())).data.role == role
-        && get(/databases/$(database)/documents/staffRoles/$(signedInEmail())).data.active != false;
+      return (isSignedIn() && tokenRole() == role)
+        || (
+          isSignedIn()
+          && exists(/databases/$(database)/documents/staffRoles/$(signedInEmail()))
+          && get(/databases/$(database)/documents/staffRoles/$(signedInEmail())).data.role == role
+          && get(/databases/$(database)/documents/staffRoles/$(signedInEmail())).data.active != false
+        );
     }
 
     function hasAnyStaffRole(roles) {
-      return isSignedIn()
-        && exists(/databases/$(database)/documents/staffRoles/$(signedInEmail()))
-        && get(/databases/$(database)/documents/staffRoles/$(signedInEmail())).data.role in roles
-        && get(/databases/$(database)/documents/staffRoles/$(signedInEmail())).data.active != false;
+      return (isSignedIn() && tokenRole() in roles)
+        || (
+          isSignedIn()
+          && exists(/databases/$(database)/documents/staffRoles/$(signedInEmail()))
+          && get(/databases/$(database)/documents/staffRoles/$(signedInEmail())).data.role in roles
+          && get(/databases/$(database)/documents/staffRoles/$(signedInEmail())).data.active != false
+        );
     }
 
     function hasAdminDocRole(roles) {
@@ -629,7 +635,13 @@ service cloud.firestore {
     }
 
     match /staffRoles/{roleId} {
-      allow read, write: if isOwner() || isAdmin();
+      allow get: if isOwner()
+        || isAdmin()
+        || (isSignedIn()
+          && resource.data.email is string
+          && resource.data.email == signedInEmail());
+      allow list: if isOwner() || isAdmin();
+      allow create, update, delete: if isOwner() || isAdmin();
     }
 
     match /admins/{uid} {
