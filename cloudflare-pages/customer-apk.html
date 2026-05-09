@@ -9196,11 +9196,14 @@ async function signup() {
     } catch (err) {
       console.warn("[Caya] Welcome email skipped:", err);
     }
-    await syncUserToCustomerRewardRecord(user.uid, {
-      fullName: "",
-      email: user.email.toLowerCase(),
-      points: 10
-    });
+    await runOptionalFirestoreAction(
+      "signup customer reward sync",
+      () => syncUserToCustomerRewardRecord(user.uid, {
+        fullName: "",
+        email: user.email.toLowerCase(),
+        points: 10
+      })
+    );
 
     document.getElementById("msg").innerText = "Account created. Please complete your profile.";
 
@@ -10394,18 +10397,25 @@ function proceedToCustomerCheckout() {
 
 async function showCustomerDashboard(user, data) {
   startInactivityTimer("customer");
-  await loadBusinessSettings();
-  await cleanupExpiredReferralCodes();
-  if (data.referralCode && isReferralCodeExpired(data)) {
-    await clearExpiredReferralCodeForUser(user.uid, data);
-    data = { ...data, referralCode: "", referralCodeExpiresAt: "", referralCodeExpired: true };
-  }
-  await syncUserToCustomerRewardRecord(user.uid, data);
   document.getElementById("authSection").classList.add("hidden");
   document.getElementById("adminSection").classList.add("hidden");
   document.getElementById("cashierSection").classList.add("hidden");
   document.getElementById("customerSection").classList.remove("hidden");
   moveCustomerOrderBeforeRewards();
+
+  await loadBusinessSettings();
+  await runOptionalFirestoreAction("expired referral cleanup", () => cleanupExpiredReferralCodes());
+  if (data.referralCode && isReferralCodeExpired(data)) {
+    await runOptionalFirestoreAction(
+      "expired referral code clear",
+      () => clearExpiredReferralCodeForUser(user.uid, data)
+    );
+    data = { ...data, referralCode: "", referralCodeExpiresAt: "", referralCodeExpired: true };
+  }
+  await runOptionalFirestoreAction(
+    "customer reward sync",
+    () => syncUserToCustomerRewardRecord(user.uid, data)
+  );
 
   const points = data.points || 0;
   const firstName = getFirstName(data.fullName || user.email || "Caya");
