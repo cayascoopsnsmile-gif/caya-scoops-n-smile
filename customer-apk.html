@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -4786,7 +4786,7 @@
         <div class="storefront-brand-block">
           <img class="storefront-hero-logo" src="assets/caya-logo.png" alt="Caya Scoops N Smile logo">
           <h1 class="storefront-brand-title">Caya Scoops N Smile</h1>
-          <p class="storefront-brand-subtitle">Ice Cream � Bubble Tea � Party Treats</p>
+          <p class="storefront-brand-subtitle">Ice Cream • Bubble Tea • Party Treats</p>
         </div>
         <h1 class="storefront-hero-headline">Sweet moments, made fresh.</h1>
         <p>Order creamy scoops, chillers, fruit ice, bubble tea, popcorn, and party favorites.</p>
@@ -5008,7 +5008,7 @@
           <div class="web-customer-grid">
             <div class="web-customer-hero">
               <div class="web-customer-hero-copy">
-                <div class="hero-kicker">LUXURY TREATS � LOYALTY REWARDS � PREMIUM EXPERIENCE</div>
+                <div class="hero-kicker">LUXURY TREATS • LOYALTY REWARDS • PREMIUM EXPERIENCE</div>
                 <h2>Welcome to Caya Scoops N Smile</h2>
                 <p>Order your favorites, earn points, redeem rewards, and track every treat in one polished customer space.</p>
               </div>
@@ -7113,7 +7113,7 @@ console.log("[Caya APK] Firebase initialized");
   - {{customer_email}}
 
   Recommended template settings in EmailJS:
-  - From Name: Caya Scoops N Smile 🍦
+  - From Name: Caya Scoops N Smile ðŸ¦
   - Reply To: {{customer_email}}
 */
 const EMAILJS_PUBLIC_KEY = "PosF-q5b8IUp134rY";
@@ -7470,8 +7470,8 @@ function generateGuestCustomerId() {
 }
 
 function getRewardMessage(points) {
-  if (points >= 100) return "🎉 Free 2 Scoop Cone unlocked!";
-  if (points >= 60) return "🍦 Free 1 Scoop Cone unlocked!";
+  if (points >= 100) return "ðŸŽ‰ Free 2 Scoop Cone unlocked!";
+  if (points >= 60) return "ðŸ¦ Free 1 Scoop Cone unlocked!";
   return "You are " + (60 - points) + " points away from a Free 1 Scoop Cone";
 }
 
@@ -8665,20 +8665,20 @@ async function sendWelcomeEmailIfConfigured(fullName, emailAddress) {
   const warmMessage =
 `Hi ${fullName},
 
-Welcome to Caya Scoops N Smile 🍦
+Welcome to Caya Scoops N Smile ðŸ¦
 
-We’re so happy to have you with us.
+Weâ€™re so happy to have you with us.
 Your loyalty account is now active and ready to earn rewards, enjoy promotions, and stay updated on our latest treats.
 
-Here’s what you can look forward to:
-� Loyalty points on purchases
-� Special promo codes
-� Birthday rewards
-� New flavor announcements
-� Exclusive offers
+Hereâ€™s what you can look forward to:
+• Loyalty points on purchases
+• Special promo codes
+• Birthday rewards
+• New flavor announcements
+• Exclusive offers
 
 Thank you for joining our sweet community.
-We can’t wait to serve you!
+We canâ€™t wait to serve you!
 
 With smiles,
 Caya Scoops N Smile`;
@@ -8689,7 +8689,7 @@ Caya Scoops N Smile`;
       customer_email: emailAddress,
       message: warmMessage,
       business_name: "Caya Scoops N Smile",
-      from_name: "Caya Scoops N Smile 🍦",
+      from_name: "Caya Scoops N Smile ðŸ¦",
       reply_to: emailAddress
     });
   } catch (err) {
@@ -9018,7 +9018,7 @@ function applyPortalMode() {
 
 function getRedeemIn7DaysText(name, rewardName) {
   const redeemBy = getDatePlusDays(7);
-  return `Hi ${name}, your reward${rewardName ? " (" + rewardName + ")" : ""} is ready at Caya Scoops N Smile 🍦 Please redeem within 7 days. Redeem by: ${formatDateDisplay(redeemBy)}. We look forward to serving you!`;
+  return `Hi ${name}, your reward${rewardName ? " (" + rewardName + ")" : ""} is ready at Caya Scoops N Smile ðŸ¦ Please redeem within 7 days. Redeem by: ${formatDateDisplay(redeemBy)}. We look forward to serving you!`;
 }
 
 /* AUTH */
@@ -9049,6 +9049,40 @@ function getFriendlyAuthErrorMessage(err, mode = "login") {
   return err?.message || "Something went wrong. Please try again.";
 }
 
+function buildDefaultCustomerProfile(email, referralCodeUsed = "") {
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+  return {
+    fullName: "",
+    dateOfBirth: "",
+    phoneNumber: "",
+    address: "",
+    email: normalizedEmail,
+    referralCode: getReferralCode(normalizedEmail),
+    referralCodeExpiresAt: getDatePlusDays(14),
+    referralCodeUsed: referralCodeUsed || "",
+    points: 10,
+    loyaltyId: "",
+    profileComplete: false,
+    birthdayRewardRedeemedYear: "",
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    manualCustomer: false
+  };
+}
+
+async function writeCustomerProfileDoc(userId, profileData) {
+  try {
+    await db.collection("users").doc(userId).set(profileData, { merge: true });
+    return true;
+  } catch (err) {
+    const code = String(err?.code || "").toLowerCase();
+    if (code.includes("permission-denied")) {
+      console.warn("[Caya] User profile write skipped for this session:", err);
+      return false;
+    }
+    throw err;
+  }
+}
+
 async function signup() {
   try {
     const enteredEmail = document.getElementById("email").value.trim().toLowerCase();
@@ -9075,29 +9109,22 @@ async function signup() {
 
     const userCredential = await auth.createUserWithEmailAndPassword(enteredEmail, enteredPassword);
     const user = userCredential.user;
-
-    await db.collection("users").doc(user.uid).set({
-      fullName: "",
-      dateOfBirth: "",
-      phoneNumber: "",
-      address: "",
-      email: user.email.toLowerCase(),
-      referralCode: getReferralCode(user.email.toLowerCase()),
-      referralCodeExpiresAt: getDatePlusDays(14),
-      referralCodeUsed: enteredReferralCode,
-      points: 10,
-      loyaltyId: "",
-      profileComplete: false,
-      birthdayRewardRedeemedYear: "",
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      manualCustomer: false
-    });
+    const newProfile = buildDefaultCustomerProfile(user.email, enteredReferralCode);
+    await writeCustomerProfileDoc(user.uid, newProfile);
 
     if (enteredReferralCode) {
-      await processReferralSignup(user, enteredReferralCode, enteredEmail);
+      try {
+        await processReferralSignup(user, enteredReferralCode, enteredEmail);
+      } catch (err) {
+        console.warn("[Caya] Referral signup processing skipped:", err);
+      }
     }
 
-    await sendWelcomeEmailIfConfigured(enteredEmail, enteredEmail);
+    try {
+      await sendWelcomeEmailIfConfigured(enteredEmail, enteredEmail);
+    } catch (err) {
+      console.warn("[Caya] Welcome email skipped:", err);
+    }
     await syncUserToCustomerRewardRecord(user.uid, {
       fullName: "",
       email: user.email.toLowerCase(),
@@ -9109,21 +9136,10 @@ async function signup() {
     if (isAdminEmail(user.email)) {
       showAdminDashboard(user);
     } else {
-      showCustomerDashboard(user, {
-        fullName: "",
-        dateOfBirth: "",
-        phoneNumber: "",
-        address: "",
-        points: 10,
-        loyaltyId: "",
-        profileComplete: false,
-        referralCode: getReferralCode(user.email.toLowerCase()),
-        referralCodeExpiresAt: getDatePlusDays(14),
-        referralCodeUsed: enteredReferralCode
-      });
+      showCustomerDashboard(user, newProfile);
     }
   } catch (err) {
-    console.error("[Caya APK] Signup failed:", err);
+    console.error("[Caya] Signup failed:", err);
     alert(getFriendlyAuthErrorMessage(err, "signup"));
   }
 }
@@ -9148,29 +9164,28 @@ async function login() {
       return;
     }
 
-    const doc = await db.collection("users").doc(user.uid).get();
+    let doc;
+    try {
+      doc = await db.collection("users").doc(user.uid).get();
+    } catch (err) {
+      const code = String(err?.code || "").toLowerCase();
+      if (code.includes("permission-denied")) {
+        const fallbackData = buildDefaultCustomerProfile(user.email);
+        await showCustomerDashboard(user, fallbackData);
+        return;
+      }
+      throw err;
+    }
     if (!doc.exists) {
-      const newData = {
-        fullName: "",
-        dateOfBirth: "",
-        phoneNumber: "",
-        email: user.email.toLowerCase(),
-        points: 10,
-        loyaltyId: "",
-        referralCode: getReferralCode(user.email.toLowerCase()),
-        referralCodeExpiresAt: getDatePlusDays(14),
-        birthdayRewardRedeemedYear: "",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        manualCustomer: false
-      };
-      await db.collection("users").doc(user.uid).set(newData);
+      const newData = buildDefaultCustomerProfile(user.email);
+      await writeCustomerProfileDoc(user.uid, newData);
       await showCustomerDashboard(user, newData);
       return;
     }
 
     await showCustomerDashboard(user, doc.data());
   } catch (err) {
-    console.error("[Caya APK] Login flow failed:", err);
+    console.error("[Caya] Login flow failed:", err);
     alert(getFriendlyAuthErrorMessage(err, "login"));
   }
 }
@@ -9231,7 +9246,7 @@ async function checkWinnerNotice(email) {
   const data = winnerDoc.data();
   if (data.customerEmail === email.toLowerCase()) {
     notice.classList.remove("hidden");
-    notice.innerText = "🎉 Congratulations! You were selected for today’s Free 1 Scoop Waffle Cone.";
+    notice.innerText = "ðŸŽ‰ Congratulations! You were selected for todayâ€™s Free 1 Scoop Waffle Cone.";
   } else {
     notice.classList.add("hidden");
     notice.innerText = "";
@@ -9562,7 +9577,7 @@ function renderCustomerOrderHistoryDetails(order) {
     Requested Time: ${escapeHtml(order.requestedTime || "As soon as possible")}<br>
     Notes: ${escapeHtml(order.notes || "None")}<br>
     Date: ${order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000).toLocaleString() : "N/A"}<br><br>
-    ${(order.items || []).map(item => `� ${escapeHtml(item.product || "Item")} - ${currency(item.amount || 0)}`).join("<br>")}<br><br>
+    ${(order.items || []).map(item => `• ${escapeHtml(item.product || "Item")} - ${currency(item.amount || 0)}`).join("<br>")}<br><br>
     <button onclick="customerReorderFromHistory('${encodedItems}')">Reorder</button>
     <button class="btn-gold" onclick="saveFavoriteOrder('${encodedItems}', '${escapeForSingleQuote(favoriteLabel)}')">Save Favorite</button>
   `;
@@ -9799,7 +9814,7 @@ function getApkMockProductPresets() {
       toppings: ["Chocolate Syrup", "Caramel", "Oreo Crumbs", "Nuts"]
     },
     "Bubble Tea": {
-      description: "Creamy bubble tea with premium pearls and a smooth caf�-style finish.",
+      description: "Creamy bubble tea with premium pearls and a smooth café-style finish.",
       whatYouGet: ["Tea Base", "Boba Pearls", "Cold Serve"],
       category: "Drinks",
       badge: "Cold Favorite",
@@ -10345,7 +10360,7 @@ async function showCustomerDashboard(user, data) {
   if (document.getElementById("apkProfileMaskedEmail")) document.getElementById("apkProfileMaskedEmail").innerText = maskedEmail ? "Email: " + maskedEmail : "";
   if (document.getElementById("apkProfileMaskedPhone")) document.getElementById("apkProfileMaskedPhone").innerText = maskedPhone ? "Phone: " + maskedPhone : "";
   document.getElementById("customerBirthdayStatus").innerText =
-    isBirthdayToday(data.dateOfBirth) ? "🎂 Happy Birthday! You can redeem your birthday reward." : "";
+    isBirthdayToday(data.dateOfBirth) ? "ðŸŽ‚ Happy Birthday! You can redeem your birthday reward." : "";
   const birthdayRewardInfo = document.getElementById("customerBirthdayRewardInfo");
   if (birthdayRewardInfo) {
     birthdayRewardInfo.innerText = data.birthdayRewardExpiry
@@ -11540,7 +11555,7 @@ async function loadCustomerMenu() {
           <div class="product-card">
             <img class="product-image" src="${escapeHtml(getProductImageUrl(item, index + 1))}" alt="${escapeHtml(item.name)}">
             <div class="product-title">${escapeHtml(item.name)}</div>
-            <div class="small-note">Top pick � ${item.category}</div>
+            <div class="small-note">Top pick • ${item.category}</div>
             ${renderCustomerFlavorSelect(item, flavorsByCategory, `featured_flavor_${sanitizeId(item.name)}_${index}`)}
             <p>Price: ${currency(item.price)}</p>
             <button onclick="addMenuProductToCart('${escapeForSingleQuote(item.name)}', ${Number(item.price)}, 'featured_flavor_${sanitizeId(item.name)}_${index}', '${escapeForSingleQuote(getProductImageUrl(item, index + 1))}')">Add to Cart</button>
@@ -14507,7 +14522,7 @@ function openCustomerPartyPackageModal(packageId) {
     ${pkg.preparationNotes ? `<p><strong>Notes:</strong> ${escapeHtml(pkg.preparationNotes)}</p>` : ""}
     <div class="item-box" style="margin-top:12px;">
       <strong>Included Items</strong><br>
-      ${includedItems.length ? includedItems.map(item => `� ${escapeHtml(item)}`).join("<br>") : "No included items listed yet."}
+      ${includedItems.length ? includedItems.map(item => `• ${escapeHtml(item)}`).join("<br>") : "No included items listed yet."}
     </div>
     <div class="item-box" style="margin-top:12px;">
       <strong>Choose ${getPartyPackageDessertChoiceLimit(pkg)} Dessert Treat${getPartyPackageDessertChoiceLimit(pkg) === 1 ? "" : "s"}</strong><br>
@@ -16162,7 +16177,7 @@ function renderCashierCart() {
         <span>${currency(item.price * Number(item.qty || 1))}</span>
       </div>
       <div class="cashier-cart-item-bottom">
-        <span class="small-note">Price ${currency(item.price)} each${item.itemType ? ` � ${escapeHtml(item.itemType)}` : ""}</span>
+        <span class="small-note">Price ${currency(item.price)} each${item.itemType ? ` · ${escapeHtml(item.itemType)}` : ""}</span>
         <div class="cashier-cart-controls">
           <button type="button" class="btn-secondary" onclick="decreaseCashierCartQty(${index})">-</button>
           <span class="cashier-cart-qty">${Number(item.qty || 1)}</span>
@@ -16842,7 +16857,7 @@ async function loadOrdersForStatus() {
         <strong>Contact Phone:</strong> ${order.contactPhone || "N/A"}<br>
         <strong>Notes:</strong> ${order.notes || "None"}<br>
         <strong>Date:</strong> ${order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000).toLocaleString() : "N/A"}<br><br>
-        ${order.items.map(item => `� ${item.product} - ${currency(item.amount)}`).join("<br>")}<br><br>
+        ${order.items.map(item => `• ${item.product} - ${currency(item.amount)}`).join("<br>")}<br><br>
         <select id="${statusId}">
           <option ${order.status === "Pending" ? "selected" : ""}>Pending</option>
           <option ${order.status === "Preparing" ? "selected" : ""}>Preparing</option>
@@ -19474,7 +19489,7 @@ async function loadCustomerOwnOrderHistory(customerEmail) {
           Contact Phone: ${order.contactPhone || "N/A"}<br>
           Notes: ${order.notes || "None"}<br>
           Date: ${order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000).toLocaleString() : "N/A"}<br><br>
-          ${order.items.map(item => `� ${item.product} - ${currency(item.amount)}`).join("<br>")}<br>
+          ${order.items.map(item => `• ${item.product} - ${currency(item.amount)}`).join("<br>")}<br>
           <button onclick="customerReorderFromHistory('${encodedItems}')">Reorder</button>
           <button class="btn-gold" onclick="saveFavoriteOrder('${encodedItems}', '${escapeForSingleQuote(favoriteLabel)}')">Save Favorite</button>
         </div>
@@ -19673,7 +19688,7 @@ function sendWinnerWhatsapp() {
     alert("Enter phone number.");
     return;
   }
-  const msg = `Hi ${name}, congratulations! 🎉 You were selected as today's daily winner at Caya Scoops N Smile. You won a Free 1 Scoop Waffle Cone 🍦 Please redeem within 7 days. Redeem by: ${formatDateDisplay(getDatePlusDays(7))}.`;
+  const msg = `Hi ${name}, congratulations! ðŸŽ‰ You were selected as today's daily winner at Caya Scoops N Smile. You won a Free 1 Scoop Waffle Cone ðŸ¦ Please redeem within 7 days. Redeem by: ${formatDateDisplay(getDatePlusDays(7))}.`;
   openWhatsAppMessage(phone, msg);
 }
 
@@ -19684,7 +19699,7 @@ function sendBirthdayWhatsapp() {
     alert("Enter phone number.");
     return;
   }
-  const msg = `Hi ${name}, happy birthday from Caya Scoops N Smile 🎂🍦 Your birthday reward is ready for redemption. Please redeem within 7 days. Redeem by: ${formatDateDisplay(getDatePlusDays(7))}.`;
+  const msg = `Hi ${name}, happy birthday from Caya Scoops N Smile ðŸŽ‚ðŸ¦ Your birthday reward is ready for redemption. Please redeem within 7 days. Redeem by: ${formatDateDisplay(getDatePlusDays(7))}.`;
   openWhatsAppMessage(phone, msg);
 }
 
@@ -19696,7 +19711,7 @@ function sendOrderWhatsapp() {
     alert("Enter phone number.");
     return;
   }
-  const msg = `Hi ${name}, thank you for your order with Caya Scoops N Smile 🍦\n\n${receipt}`;
+  const msg = `Hi ${name}, thank you for your order with Caya Scoops N Smile ðŸ¦\n\n${receipt}`;
   openWhatsAppMessage(phone, msg);
 }
 
@@ -19900,5 +19915,7 @@ auth.onAuthStateChanged(async (user) => {
 
 </body>
 </html>
+
+
 
 
