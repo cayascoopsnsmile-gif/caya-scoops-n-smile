@@ -169,13 +169,13 @@ service cloud.firestore {
     }
 
     function customerCreateIsValid(uid) {
-      return request.resource.data.keys().hasAll(["name", "email", "createdAt"])
+      return request.resource.data.keys().hasAll(["uid", "name", "email"])
         && isCustomer(uid)
         && request.resource.data.uid == uid
-        && request.resource.data.email == request.auth.token.email
         && request.resource.data.name is string
         && request.resource.data.email is string
-        && request.resource.data.createdAt is timestamp
+        && request.resource.data.email == signedInEmail()
+        && (!("createdAt" in request.resource.data) || request.resource.data.createdAt is timestamp)
         && hasValidOptionalNumber("points")
         && (!("points" in request.resource.data) || request.resource.data.points <= 10)
         && (!("role" in request.resource.data) || request.resource.data.role == "customer")

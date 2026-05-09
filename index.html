@@ -8928,6 +8928,19 @@ function logFirestorePermissionFailure(action, err) {
   console.warn(`[Caya] Firestore permission denied during ${action}:`, err);
 }
 
+function buildCustomerProfileWritePayload(profileData = {}) {
+  const email = String(profileData.email || "").trim().toLowerCase();
+  return {
+    email,
+    fullName: String(profileData.fullName || ""),
+    dateOfBirth: String(profileData.dateOfBirth || ""),
+    phoneNumber: String(profileData.phoneNumber || ""),
+    address: String(profileData.address || ""),
+    referralCodeUsed: String(profileData.referralCodeUsed || ""),
+    profileComplete: Boolean(profileData.profileComplete)
+  };
+}
+
 async function readCustomerProfileDoc(userId, fallbackData = null, action = "customer profile read") {
   try {
     const doc = await db.collection("users").doc(userId).get();
@@ -8942,13 +8955,27 @@ async function readCustomerProfileDoc(userId, fallbackData = null, action = "cus
 }
 
 async function writeCustomerProfileDoc(userId, profileData, action = "customer profile write") {
+  const safeProfileData = buildCustomerProfileWritePayload(profileData);
+  if (!safeProfileData.email) return false;
   try {
-    await db.collection("users").doc(userId).set(profileData, { merge: true });
+    await db.collection("users").doc(userId).set(safeProfileData, { merge: true });
     return true;
   } catch (err) {
     if (isPermissionDeniedError(err)) {
       logFirestorePermissionFailure(action, err);
       return false;
+    }
+    throw err;
+  }
+}
+
+async function runOptionalFirestoreAction(action, operation, fallbackValue = false) {
+  try {
+    return await operation();
+  } catch (err) {
+    if (isPermissionDeniedError(err)) {
+      logFirestorePermissionFailure(action, err);
+      return fallbackValue;
     }
     throw err;
   }
