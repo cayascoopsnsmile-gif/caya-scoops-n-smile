@@ -7469,7 +7469,8 @@ async function getStaffRole(email) {
     const doc = await db.collection("staffRoles").doc(normalizedEmail).get();
     return doc.exists ? (doc.data().role || "") : "";
   } catch (err) {
-    if (String(err?.code || "").includes("permission-denied")) {
+    if (isPermissionDeniedError(err)) {
+      logFirestorePermissionFailure("staff role lookup", err);
       return "";
     }
     throw err;
@@ -7478,15 +7479,39 @@ async function getStaffRole(email) {
 
 async function getCashierDisplayName(user) {
   const email = user.email.toLowerCase();
-  const staffDoc = await db.collection("staffRoles").doc(email).get();
-  if (staffDoc.exists && staffDoc.data().displayName) return staffDoc.data().displayName;
+  try {
+    const staffDoc = await db.collection("staffRoles").doc(email).get();
+    if (staffDoc.exists && staffDoc.data().displayName) return staffDoc.data().displayName;
+  } catch (err) {
+    if (isPermissionDeniedError(err)) {
+      logFirestorePermissionFailure("cashier staff display lookup", err);
+    } else {
+      throw err;
+    }
+  }
 
-  const userDoc = await db.collection("users").doc(user.uid).get();
-  if (userDoc.exists && userDoc.data().fullName) return userDoc.data().fullName;
+  try {
+    const userDoc = await db.collection("users").doc(user.uid).get();
+    if (userDoc.exists && userDoc.data().fullName) return userDoc.data().fullName;
+  } catch (err) {
+    if (isPermissionDeniedError(err)) {
+      logFirestorePermissionFailure("cashier user profile lookup", err);
+    } else {
+      throw err;
+    }
+  }
 
-  const userSnapshot = await db.collection("users").where("email", "==", email).get();
-  if (!userSnapshot.empty && userSnapshot.docs[0].data().fullName) {
-    return userSnapshot.docs[0].data().fullName;
+  try {
+    const userSnapshot = await db.collection("users").where("email", "==", email).get();
+    if (!userSnapshot.empty && userSnapshot.docs[0].data().fullName) {
+      return userSnapshot.docs[0].data().fullName;
+    }
+  } catch (err) {
+    if (isPermissionDeniedError(err)) {
+      logFirestorePermissionFailure("cashier user email lookup", err);
+    } else {
+      throw err;
+    }
   }
 
   return email;
@@ -7494,14 +7519,31 @@ async function getCashierDisplayName(user) {
 
 async function getCashierProfile(user) {
   const email = user.email.toLowerCase();
-  const staffDoc = await db.collection("staffRoles").doc(email).get();
-  const staffData = staffDoc.exists ? staffDoc.data() : {};
+  let staffData = {};
+  try {
+    const staffDoc = await db.collection("staffRoles").doc(email).get();
+    staffData = staffDoc.exists ? staffDoc.data() : {};
+  } catch (err) {
+    if (isPermissionDeniedError(err)) {
+      logFirestorePermissionFailure("cashier profile lookup", err);
+    } else {
+      throw err;
+    }
+  }
   const displayName = staffData.displayName || await getCashierDisplayName(user);
   let loginId = staffData.loginId || "";
 
   if (!loginId) {
     loginId = generateStaffLoginId(displayName, email);
-    await db.collection("staffRoles").doc(email).set({ loginId, displayName, email }, { merge: true });
+    try {
+      await db.collection("staffRoles").doc(email).set({ loginId, displayName, email }, { merge: true });
+    } catch (err) {
+      if (isPermissionDeniedError(err)) {
+        logFirestorePermissionFailure("cashier profile loginId sync", err);
+      } else {
+        throw err;
+      }
+    }
   }
 
   return {
@@ -8804,14 +8846,34 @@ function buildDefaultCustomerProfile(email, referralCodeUsed = "") {
   };
 }
 
-async function writeCustomerProfileDoc(userId, profileData) {
+function isPermissionDeniedError(err) {
+  return String(err?.code || "").toLowerCase().includes("permission-denied");
+}
+
+function logFirestorePermissionFailure(action, err) {
+  console.warn(`[Caya] Firestore permission denied during ${action}:`, err);
+}
+
+async function readCustomerProfileDoc(userId, fallbackData = null, action = "customer profile read") {
+  try {
+    const doc = await db.collection("users").doc(userId).get();
+    return doc.exists ? doc.data() : fallbackData;
+  } catch (err) {
+    if (isPermissionDeniedError(err)) {
+      logFirestorePermissionFailure(action, err);
+      return fallbackData;
+    }
+    throw err;
+  }
+}
+
+async function writeCustomerProfileDoc(userId, profileData, action = "customer profile write") {
   try {
     await db.collection("users").doc(userId).set(profileData, { merge: true });
     return true;
   } catch (err) {
-    const code = String(err?.code || "").toLowerCase();
-    if (code.includes("permission-denied")) {
-      console.warn("[Caya] User profile write skipped for this session:", err);
+    if (isPermissionDeniedError(err)) {
+      logFirestorePermissionFailure(action, err);
       return false;
     }
     throw err;
@@ -8899,26 +8961,15 @@ async function login() {
       return;
     }
 
-    let doc;
-    try {
-      doc = await db.collection("users").doc(user.uid).get();
-    } catch (err) {
-      const code = String(err?.code || "").toLowerCase();
-      if (code.includes("permission-denied")) {
-        const fallbackData = buildDefaultCustomerProfile(user.email);
-        await showCustomerDashboard(user, fallbackData);
-        return;
-      }
-      throw err;
-    }
-    if (!doc.exists) {
-      const newData = buildDefaultCustomerProfile(user.email);
-      await writeCustomerProfileDoc(user.uid, newData);
-      await showCustomerDashboard(user, newData);
+    const fallbackData = buildDefaultCustomerProfile(user.email);
+    const existingProfile = await readCustomerProfileDoc(user.uid, null, "login customer profile read");
+    if (!existingProfile) {
+      await writeCustomerProfileDoc(user.uid, fallbackData, "login customer profile bootstrap");
+      await showCustomerDashboard(user, fallbackData);
       return;
     }
 
-    await showCustomerDashboard(user, doc.data());
+    await showCustomerDashboard(user, existingProfile);
   } catch (err) {
     console.error("[Caya] Login flow failed:", err);
     alert(getFriendlyAuthErrorMessage(err, "login"));
@@ -20051,24 +20102,14 @@ auth.onAuthStateChanged(async (user) => {
       return;
     }
 
-    const doc = await db.collection("users").doc(user.uid).get();
+    const fallbackData = buildDefaultCustomerProfile(user.email);
+    const existingProfile = await readCustomerProfileDoc(user.uid, null, "auth session customer profile read");
 
-    if (doc.exists) {
-      await showCustomerDashboard(user, doc.data());
+    if (existingProfile) {
+      await showCustomerDashboard(user, existingProfile);
     } else {
-      const data = {
-        fullName: "",
-        dateOfBirth: "",
-        phoneNumber: "",
-        email: user.email.toLowerCase(),
-        points: 10,
-        loyaltyId: "",
-        birthdayRewardRedeemedYear: "",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        manualCustomer: false
-      };
-      await db.collection("users").doc(user.uid).set(data);
-      await showCustomerDashboard(user, data);
+      await writeCustomerProfileDoc(user.uid, fallbackData, "auth session customer profile bootstrap");
+      await showCustomerDashboard(user, fallbackData);
     }
   } catch (err) {
     console.error("[Caya] Auth state restoration failed:", err);
@@ -20078,7 +20119,4 @@ auth.onAuthStateChanged(async (user) => {
 
 </body>
 </html>
-
-
-
 
