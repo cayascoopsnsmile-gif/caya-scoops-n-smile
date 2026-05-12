@@ -12694,7 +12694,7 @@ function getCartItemKey(item) {
   ].join("||");
 }
 
-function getCartGroups() {function getCartGroups() {
+function getCartGroups() {
   const map = new Map();
   customerCart.forEach((item, index) => {
     const key = getCartItemKey(item);
@@ -13809,7 +13809,7 @@ async function submitCateringRequest() {
   proceedToCustomerCheckout();
 }
 
-function shareReferralWhatsapp() {function shareReferralWhatsapp() {
+function shareReferralWhatsapp() {
   const code = document.getElementById("customerReferralCode").innerText.replace("Referral Code: ", "");
   const expiryText = document.getElementById("customerReferralExpiry")?.innerText || "";
   if (!code || code === "No active referral code") {
@@ -14702,7 +14702,7 @@ function selectPartyPackageForRequest(packageId) {
   openCustomerPartyRequestModal(packageId);
 }
 
-function initPartyPackageManager() {function initPartyPackageManager() {
+function initPartyPackageManager() {
   const formIds = [
     "partyPackageName", "partyPackageCode", "partyPackageDescription", "partyPackageCategory",
     "partyPackagePersons", "partyPackageDessertCount", "partyPackageBouncyHours", "partyPackagePrice", "partyPackageDeposit", "partyPackageDisplayOrder",
@@ -15720,7 +15720,7 @@ Thank you for your purchase!`;
 
 /* ADMIN SALE */
 
-async function processSale() {async function processSale() {
+async function processSale() {
   const emailToFind = document.getElementById("customerEmail").value.trim().toLowerCase();
   const product = document.getElementById("productSelect").value;
 
