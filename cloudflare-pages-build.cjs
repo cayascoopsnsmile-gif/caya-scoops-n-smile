@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const root = __dirname;
+const sourceDir = path.join(root, "caya-react", "dist");
 const outDir = path.join(root, "cf-pages-dist");
 
 function ensureDir(dirPath) {
@@ -12,8 +13,8 @@ function removeDir(dirPath) {
   fs.rmSync(dirPath, { recursive: true, force: true });
 }
 
-function copyFile(relativePath) {
-  const source = path.join(root, relativePath);
+function copyFile(relativePath, sourceBase = root) {
+  const source = path.join(sourceBase, relativePath);
   const target = path.join(outDir, relativePath);
 
   if (!fs.existsSync(source)) {
@@ -24,8 +25,8 @@ function copyFile(relativePath) {
   fs.copyFileSync(source, target);
 }
 
-function copyDir(relativePath) {
-  const source = path.join(root, relativePath);
+function copyDir(relativePath, sourceBase = root) {
+  const source = path.join(sourceBase, relativePath);
   const target = path.join(outDir, relativePath);
 
   if (!fs.existsSync(source)) {
@@ -38,15 +39,10 @@ function copyDir(relativePath) {
 removeDir(outDir);
 ensureDir(outDir);
 
-[
-  "index.html",
-  "customer-apk.html",
-  "_headers",
-  "_redirects",
-].forEach(copyFile);
+copyFile("index.html", sourceDir);
+copyFile("_headers");
+copyFile("_redirects");
 
-[
-  "assets",
-].forEach(copyDir);
+copyDir("assets", sourceDir);
 
 console.log(`Cloudflare Pages bundle created in ${outDir}`);
