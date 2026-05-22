@@ -56,27 +56,32 @@ export function CustomerAppRoutes({ onCartCountChange, onLogout, onProfileSaved,
           path={CUSTOMER_ROUTE_PATHS.home}
           element={
             <CustomerHomePage
-              cart={cart}
-              concierge={concierge}
               currencySymbol={settings.currencySymbol}
-              menu={menu}
-              onLogout={onLogout}
-              onUseAddress={setPreferredDeliveryAddress}
-              orders={orders}
-              partyPackages={partyPackages}
               paymentReturn={paymentReturn}
               profile={profile}
-              settings={settings}
               user={user}
               wallet={wallet}
             />
           }
         />
-        <Route path={CUSTOMER_ROUTE_PATHS.menu} element={<CustomerMenuPage cart={cart} menu={menu} />} />
+        <Route path={CUSTOMER_ROUTE_PATHS.menu} element={<CustomerMenuPage cart={cart} menu={menu} partyPackages={partyPackages} settings={settings} />} />
         <Route path={CUSTOMER_ROUTE_PATHS.cart} element={<CustomerCartPage cart={cart} />} />
         <Route
           path={CUSTOMER_ROUTE_PATHS.profile}
-          element={<CustomerProfilePage onProfileSaved={onProfileSaved} profile={profile} user={user} />}
+          element={
+            <CustomerProfilePage
+              cart={cart}
+              concierge={concierge}
+              currencySymbol={settings.currencySymbol}
+              onLogout={onLogout}
+              onProfileSaved={onProfileSaved}
+              onUseAddress={setPreferredDeliveryAddress}
+              orders={orders}
+              profile={profile}
+              user={user}
+              wallet={wallet}
+            />
+          }
         />
         <Route
           path={CUSTOMER_ROUTE_PATHS.orders}
