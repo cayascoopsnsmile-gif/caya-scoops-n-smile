@@ -1,4 +1,5 @@
 import { Gift, Sparkles, Star } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar.jsx";
 import { Badge } from "@/components/ui/badge.jsx";
 import { Button } from "@/components/ui/button.jsx";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card.jsx";
@@ -18,19 +19,30 @@ function SegmentProgress({ percent }) {
 
 export function CustomerOverviewCard({ profile, user, onLogout }) {
   const displayName = profile.fullName || user?.email || "Customer";
+  const initials = displayName
+    .split(" ")
+    .map((part) => part[0] || "")
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
   const points = Number(profile.points || 10);
   const tier = getCustomerTier(points);
   const profilePercent = getProfileCompletionPercent(profile);
 
   return (
-    <Card className="bg-card/90">
+    <Card className="overflow-hidden rounded-[32px] border-white/20 bg-white/60 shadow-[0_24px_60px_rgba(84,31,104,0.14)] backdrop-blur-xl">
       <CardHeader className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-        <div className="space-y-2">
+        <div className="flex items-start gap-4">
+          <Avatar className="h-16 w-16 border border-white/20 bg-white/65 shadow-soft">
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
+          <div className="space-y-2">
           <Badge variant="secondary" className="w-fit">
             Signed in
           </Badge>
           <CardTitle className="font-display text-2xl leading-tight md:text-3xl">Welcome back, {displayName}</CardTitle>
           <CardDescription className="text-base leading-relaxed md:text-sm">{getTierPerks(tier)}</CardDescription>
+          </div>
         </div>
         {onLogout ? (
           <Button className="w-full md:w-auto" variant="outline" onClick={onLogout}>
@@ -39,7 +51,7 @@ export function CustomerOverviewCard({ profile, user, onLogout }) {
         ) : null}
       </CardHeader>
       <CardContent className="grid gap-3 md:grid-cols-3 md:gap-4">
-        <Card className="bg-secondary/70">
+        <Card className="rounded-3xl border-white/20 bg-white/50 backdrop-blur-xl">
           <CardContent className="flex items-center gap-3 p-4 md:p-5">
             <Gift className="h-5 w-5 text-primary md:h-6 md:w-6" />
             <div className="space-y-1">
@@ -49,7 +61,7 @@ export function CustomerOverviewCard({ profile, user, onLogout }) {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-secondary/70">
+        <Card className="rounded-3xl border-white/20 bg-white/50 backdrop-blur-xl">
           <CardContent className="flex items-center gap-3 p-4 md:p-5">
             <Star className="h-5 w-5 text-primary md:h-6 md:w-6" />
             <div className="space-y-1">
@@ -59,7 +71,7 @@ export function CustomerOverviewCard({ profile, user, onLogout }) {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-secondary/70">
+        <Card className="rounded-3xl border-white/20 bg-white/50 backdrop-blur-xl">
           <CardContent className="space-y-3 p-4 md:p-5">
             <div className="flex items-center gap-3">
               <Sparkles className="h-5 w-5 text-primary md:h-6 md:w-6" />

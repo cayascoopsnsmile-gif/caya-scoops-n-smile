@@ -14,7 +14,7 @@ function SummaryMetric({ label, value }) {
 export function CustomerWalletSummaryCard({ currencySymbol, loading, wallet }) {
   if (loading) {
     return (
-      <Card className="bg-card/90">
+      <Card className="rounded-[32px] border-white/20 bg-white/60 shadow-[0_24px_60px_rgba(84,31,104,0.14)] backdrop-blur-xl">
         <CardHeader className="space-y-2">
           <Badge className="w-fit" variant="secondary">
             Wallet summary
@@ -33,7 +33,7 @@ export function CustomerWalletSummaryCard({ currencySymbol, loading, wallet }) {
   }
 
   return (
-    <Card className="bg-card/90">
+    <Card className="rounded-[32px] border-white/20 bg-white/60 shadow-[0_24px_60px_rgba(84,31,104,0.14)] backdrop-blur-xl">
       <CardHeader className="space-y-2">
         <Badge className="w-fit" variant="secondary">
           Wallet summary
