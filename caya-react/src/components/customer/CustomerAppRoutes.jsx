@@ -54,7 +54,7 @@ export function CustomerAppRoutes({ onCartCountChange, onLogout, onProfileSaved,
       <Routes>
         <Route path="/" element={<Navigate replace to={CUSTOMER_ROUTE_PATHS.home} />} />
         <Route path="/dashboard" element={<Navigate replace to={CUSTOMER_ROUTE_PATHS.home} />} />
-        <Route path={CUSTOMER_ROUTE_PATHS.auth} element={<Navigate replace to={CUSTOMER_ROUTE_PATHS.home} />} />
+        <Route path={CUSTOMER_ROUTE_PATHS.auth} element={<Navigate replace to={location.state?.from || CUSTOMER_ROUTE_PATHS.home} />} />
         <Route path={CUSTOMER_ROUTE_PATHS.trackOrder} element={<Navigate replace to={CUSTOMER_ROUTE_PATHS.orders} />} />
         <Route
           path={CUSTOMER_ROUTE_PATHS.home}

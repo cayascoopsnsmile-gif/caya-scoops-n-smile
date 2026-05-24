@@ -65,11 +65,12 @@ function RewardsPreview() {
 export function CustomerMarketingHome({ onOpenAuth, onTrackOrder }) {
   useBusinessSettings();
 
-  const openOrderNow = () => onOpenAuth("signup");
+  const openOrderNow = () => onOpenAuth("signup", { redirectTo: "/menu" });
+  const openSignIn = () => onOpenAuth("login", { redirectTo: "/home" });
 
   return (
     <div className="grid gap-10">
-      <CustomerLandingHero onOpenAuth={() => onOpenAuth("login")} onOrderNow={openOrderNow} onTrackOrder={onTrackOrder} />
+      <CustomerLandingHero onOpenAuth={openSignIn} onOrderNow={openOrderNow} onTrackOrder={onTrackOrder} />
       <Separator className="bg-border/70" />
       <RewardsPreview />
       <Separator className="bg-border/70" />

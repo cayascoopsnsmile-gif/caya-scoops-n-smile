@@ -104,7 +104,7 @@ function SignupFields({ busy, register }) {
   );
 }
 
-export function CustomerAuthCard({ defaultTab = "login", surface = "card" }) {
+export function CustomerAuthCard({ defaultTab = "login", onAuthSuccess, surface = "card" }) {
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [busy, setBusy] = useState(false);
   const loginForm = useForm({
@@ -130,8 +130,10 @@ export function CustomerAuthCard({ defaultTab = "login", surface = "card" }) {
     setBusy(true);
     return loginCustomer(values)
       .then(() => {
-        toast.success("Welcome back to Caya Scoops N Smile.");
         loginForm.reset();
+        onAuthSuccess?.({
+          mode: "login"
+        });
       })
       .catch((error) => {
         toast.error(getAuthErrorMessage(error, "login"));
@@ -146,6 +148,9 @@ export function CustomerAuthCard({ defaultTab = "login", surface = "card" }) {
         toast.success("Account created. Please complete your profile.");
         signupForm.reset();
         setActiveTab("login");
+        onAuthSuccess?.({
+          mode: "signup"
+        });
       })
       .catch((error) => {
         toast.error(getAuthErrorMessage(error, "signup"));

@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 
 const FALLBACK_LOGO_URL = "/assets/caya-logo-updated.jpeg";
 
-export function CustomerAuthDialog({ defaultTab, onOpenChange, open }) {
+export function CustomerAuthDialog({ defaultTab, onAuthSuccess, onOpenChange, open }) {
   const title = defaultTab === "signup" ? "Create your Caya account" : "Sign in to your Caya account";
   const description =
     defaultTab === "signup"
@@ -27,7 +27,7 @@ export function CustomerAuthDialog({ defaultTab, onOpenChange, open }) {
           <DialogTitle className="text-center font-display text-[1.9rem] leading-tight md:text-[2.05rem]">{title}</DialogTitle>
           <DialogDescription className="text-center text-sm leading-6 md:text-[0.95rem]">{description}</DialogDescription>
         </DialogHeader>
-        <CustomerAuthCard defaultTab={defaultTab} surface="dialog" />
+        <CustomerAuthCard defaultTab={defaultTab} onAuthSuccess={onAuthSuccess} surface="dialog" />
       </DialogContent>
     </Dialog>
   );
