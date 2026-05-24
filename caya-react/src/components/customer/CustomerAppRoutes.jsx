@@ -9,6 +9,7 @@ import { CustomerOrdersPage } from "@/components/customer/CustomerOrdersPage.jsx
 import { CustomerProfilePage } from "@/components/customer/CustomerProfilePage.jsx";
 import { CustomerRewardsPage } from "@/components/customer/CustomerRewardsPage.jsx";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings.js";
+import { useCustomerAnnouncements } from "@/hooks/useCustomerAnnouncements.js";
 import { useCustomerCart } from "@/hooks/useCustomerCart.js";
 import { useCustomerConcierge } from "@/hooks/useCustomerConcierge.js";
 import { useCustomerMenu } from "@/hooks/useCustomerMenu.js";
@@ -16,6 +17,7 @@ import { useCustomerOrders } from "@/hooks/useCustomerOrders.js";
 import { useCustomerWallet } from "@/hooks/useCustomerWallet.js";
 import { usePartyPackages } from "@/hooks/usePartyPackages.js";
 import { usePaymentReturn } from "@/hooks/usePaymentReturn.js";
+import { buildCustomerNotifications } from "@/lib/customer-home.js";
 import { CUSTOMER_ROUTE_PATHS } from "@/lib/customer-routes.js";
 
 export function CustomerAppRoutes({ onCartCountChange, onLogout, onProfileSaved, profile, user }) {
@@ -29,7 +31,9 @@ export function CustomerAppRoutes({ onCartCountChange, onLogout, onProfileSaved,
   const wallet = useCustomerWallet(user, profile);
   const concierge = useCustomerConcierge(user);
   const partyPackages = usePartyPackages(menu);
+  const announcements = useCustomerAnnouncements();
   const [preferredDeliveryAddress, setPreferredDeliveryAddress] = useState("");
+  const notifications = buildCustomerNotifications(profile, wallet.wallet);
 
   useEffect(() => {
     onCartCountChange?.(cart.itemCount);
@@ -56,6 +60,8 @@ export function CustomerAppRoutes({ onCartCountChange, onLogout, onProfileSaved,
           path={CUSTOMER_ROUTE_PATHS.home}
           element={
             <CustomerHomePage
+              announcements={announcements}
+              notifications={notifications}
               currencySymbol={settings.currencySymbol}
               paymentReturn={paymentReturn}
               profile={profile}
