@@ -11,7 +11,7 @@ const DialogClose = DialogPrimitive.Close;
 const DialogOverlay = React.forwardRef(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
-    className={cn("fixed inset-0 z-50 bg-foreground/20 backdrop-blur-sm", className)}
+    className={cn("fixed inset-0 z-50 bg-[rgba(61,23,79,0.22)] backdrop-blur-xl", className)}
     {...props}
   />
 ));
@@ -23,7 +23,7 @@ const DialogContent = React.forwardRef(({ className, children, overlayClassName,
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 rounded-2xl border border-border bg-card p-6 shadow-card duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-[0.96] data-[state=open]:zoom-in-[0.96]",
+        "fixed left-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 rounded-[30px] border border-white/20 bg-white/60 p-6 shadow-[0_28px_72px_rgba(124,58,237,0.18),inset_0_1px_0_rgba(255,255,255,0.48)] backdrop-blur-[28px] duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-[0.96] data-[state=open]:zoom-in-[0.96]",
         className
       )}
       {...props}

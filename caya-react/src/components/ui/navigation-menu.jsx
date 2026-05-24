@@ -16,10 +16,10 @@ function NavigationMenuLink({ className, active = false, ...props }) {
   return (
     <button
       className={cn(
-        "relative flex w-full items-center justify-center gap-2 rounded-3xl px-4 py-3 text-sm font-semibold transition-all duration-200",
+        "relative flex w-full items-center justify-center gap-2 rounded-3xl border border-white/10 px-4 py-3 text-sm font-semibold backdrop-blur-xl transition-all duration-300",
         active
-          ? "bg-gradient-to-r from-primary to-primary/85 text-primary-foreground shadow-[0_18px_38px_rgba(123,44,191,0.24)]"
-          : "bg-white/45 text-foreground/70 hover:bg-white/60 hover:text-foreground",
+          ? "glass-button text-primary-foreground shadow-[0_18px_38px_rgba(123,44,191,0.24)]"
+          : "bg-white/30 text-foreground/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.24)] hover:-translate-y-0.5 hover:bg-white/45 hover:text-foreground",
         className
       )}
       type="button"

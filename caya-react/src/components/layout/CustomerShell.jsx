@@ -16,7 +16,7 @@ function CustomerRouteNav({ activeValue, cartCount, navigate }) {
   return (
     <>
       <div className="sticky top-4 z-30 hidden md:block">
-        <NavigationMenu className="mx-auto max-w-4xl rounded-[32px] border border-white/20 bg-white/55 p-3 shadow-[0_24px_60px_rgba(84,31,104,0.15)] backdrop-blur-xl">
+        <NavigationMenu className="glass-nav mx-auto max-w-4xl rounded-[32px] p-3">
           <NavigationMenuList className="grid grid-cols-4 gap-3">
             {navItems.map(({ icon: Icon, label, path, value }) => (
               <NavigationMenuItem key={label}>
@@ -34,7 +34,7 @@ function CustomerRouteNav({ activeValue, cartCount, navigate }) {
           </NavigationMenuList>
         </NavigationMenu>
       </div>
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-white/15 bg-white/55 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl md:hidden">
+      <nav className="glass-nav fixed inset-x-3 bottom-3 z-40 rounded-[32px] pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 md:hidden">
         <div className="mx-auto grid max-w-lg grid-cols-4 gap-2 px-4">
           {navItems.map(({ icon: Icon, label, path, value }) => (
             <Button

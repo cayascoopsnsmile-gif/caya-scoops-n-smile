@@ -4,23 +4,23 @@
 
 @layer base {
   :root {
-    --background: 327 56% 92%;
-    --foreground: 281 54% 20%;
+    --background: 314 42% 95%;
+    --foreground: 284 48% 18%;
     --card: 0 0% 100%;
     --card-foreground: 281 54% 20%;
     --popover: 0 0% 100%;
     --popover-foreground: 281 54% 20%;
-    --primary: 269 64% 46%;
+    --primary: 270 70% 45%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 322 60% 94%;
+    --secondary: 304 39% 94%;
     --secondary-foreground: 281 54% 20%;
-    --muted: 322 60% 94%;
-    --muted-foreground: 284 38% 32%;
+    --muted: 304 39% 94%;
+    --muted-foreground: 284 30% 31%;
     --accent: 0 0% 100%;
     --accent-foreground: 281 54% 20%;
-    --border: 328 43% 88%;
-    --input: 328 43% 88%;
-    --ring: 269 64% 46%;
+    --border: 0 0% 100%;
+    --input: 0 0% 100%;
+    --ring: 270 70% 45%;
     --shadow: 282 52% 28%;
     --radius: 1.5rem;
   }
@@ -32,11 +32,62 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     background-image:
-      radial-gradient(circle at top, rgba(255, 255, 255, 0.72), transparent 28%),
-      radial-gradient(circle at 15% 20%, hsl(var(--secondary) / 0.7), transparent 30%),
-      radial-gradient(circle at 85% 10%, hsl(var(--primary) / 0.08), transparent 24%),
-      linear-gradient(180deg, hsl(var(--background)), hsl(var(--secondary) / 0.82)),
-      linear-gradient(135deg, hsl(var(--background)), hsl(var(--card) / 0.92));
+      radial-gradient(circle at 8% 12%, rgba(255, 255, 255, 0.82), transparent 22%),
+      radial-gradient(circle at 82% 10%, rgba(160, 99, 255, 0.16), transparent 24%),
+      radial-gradient(circle at 50% 100%, rgba(248, 223, 242, 0.72), transparent 30%),
+      linear-gradient(180deg, rgba(255, 250, 253, 0.92), rgba(247, 235, 246, 0.96)),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(245, 229, 244, 0.74));
     min-height: 100vh;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.18;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 4px 4px, 4px 4px;
+    mix-blend-mode: soft-light;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply rounded-[28px] border border-white/20 bg-white/55 backdrop-blur-xl;
+    box-shadow:
+      0 20px 48px rgba(124, 58, 237, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  }
+
+  .glass-card-strong {
+    @apply rounded-[32px] border border-white/20 bg-white/60 backdrop-blur-[28px];
+    box-shadow:
+      0 26px 60px rgba(124, 58, 237, 0.18),
+      inset 0 1px 1px rgba(255, 255, 255, 0.55);
+  }
+
+  .glass-nav {
+    @apply border border-white/15 bg-white/35 backdrop-blur-[30px];
+    box-shadow:
+      0 14px 44px rgba(124, 58, 237, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.24);
+  }
+
+  .glass-panel {
+    @apply border border-white/15 bg-white/40 backdrop-blur-2xl;
+    box-shadow:
+      0 18px 38px rgba(76, 29, 149, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+
+  .glass-button {
+    background:
+      linear-gradient(135deg, rgba(123, 44, 191, 0.96), rgba(168, 85, 247, 0.88));
+    box-shadow:
+      0 14px 28px rgba(123, 44, 191, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18);
   }
 }
