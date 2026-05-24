@@ -16,15 +16,15 @@ function CustomerRouteNav({ activeValue, cartCount, navigate }) {
   return (
     <>
       <div className="sticky top-4 z-30 hidden md:block">
-        <NavigationMenu className="glass-nav mx-auto max-w-4xl rounded-[32px] p-3">
-          <NavigationMenuList className="grid grid-cols-4 gap-3">
+        <NavigationMenu className="glass-nav mx-auto w-full max-w-5xl rounded-[32px] p-2.5">
+          <NavigationMenuList className="flex items-center justify-between gap-2">
             {navItems.map(({ icon: Icon, label, path, value }) => (
               <NavigationMenuItem key={label}>
-                <NavigationMenuLink active={activeValue === value} onClick={() => navigate(path)}>
-                  <Icon className="h-4 w-4" />
-                  {label}
+                <NavigationMenuLink active={activeValue === value} className="mx-auto" onClick={() => navigate(path)}>
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{label}</span>
                   {value === "cart" && cartCount > 0 ? (
-                    <Badge className="absolute right-3 top-2 min-w-5 justify-center rounded-full bg-white/85 px-1.5 text-[10px] text-foreground shadow-soft" variant="secondary">
+                    <Badge className="absolute right-2.5 top-2 min-w-5 justify-center rounded-full bg-white/85 px-1.5 text-[10px] text-foreground shadow-soft" variant="secondary">
                       {cartCount}
                     </Badge>
                   ) : null}
@@ -35,19 +35,19 @@ function CustomerRouteNav({ activeValue, cartCount, navigate }) {
         </NavigationMenu>
       </div>
       <nav className="glass-nav fixed inset-x-3 bottom-3 z-40 rounded-[32px] pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 md:hidden">
-        <div className="mx-auto grid max-w-lg grid-cols-4 gap-2 px-4">
+        <div className="mx-auto flex max-w-lg items-center justify-between gap-2 px-3">
           {navItems.map(({ icon: Icon, label, path, value }) => (
             <Button
               key={label}
-              className="relative h-16 gap-3 rounded-3xl text-sm font-semibold shadow-[0_12px_30px_rgba(84,31,104,0.08)]"
+              className="relative h-14 min-w-0 flex-1 basis-0 gap-2 rounded-3xl px-2 text-sm font-semibold shadow-[0_12px_30px_rgba(84,31,104,0.08)]"
               onClick={() => navigate(path)}
               type="button"
               variant={activeValue === value ? "secondary" : "ghost"}
             >
-              <Icon className="h-4 w-4" />
-              {label}
+              <Icon className="h-4 w-4 shrink-0" />
+              <span className="truncate">{label}</span>
               {value === "cart" && cartCount > 0 ? (
-                <Badge className="absolute right-3 top-2 min-w-5 justify-center rounded-full bg-white/85 px-1.5 text-[10px] text-foreground shadow-soft" variant="secondary">
+                <Badge className="absolute right-2.5 top-1.5 min-w-5 justify-center rounded-full bg-white/85 px-1.5 text-[10px] text-foreground shadow-soft" variant="secondary">
                   {cartCount}
                 </Badge>
               ) : null}
