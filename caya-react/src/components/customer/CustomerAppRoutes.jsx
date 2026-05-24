@@ -84,6 +84,7 @@ export function CustomerAppRoutes({ onCartCountChange, onLogout, onProfileSaved,
               onUseAddress={setPreferredDeliveryAddress}
               orders={orders}
               profile={profile}
+              settings={settings}
               user={user}
               wallet={wallet}
             />
@@ -102,7 +103,19 @@ export function CustomerAppRoutes({ onCartCountChange, onLogout, onProfileSaved,
             />
           }
         />
-        <Route path={CUSTOMER_ROUTE_PATHS.rewards} element={<CustomerRewardsPage currencySymbol={settings.currencySymbol} profile={profile} wallet={wallet} />} />
+        <Route
+          path={CUSTOMER_ROUTE_PATHS.rewards}
+          element={
+            <CustomerRewardsPage
+              currencySymbol={settings.currencySymbol}
+              onProfileSaved={onProfileSaved}
+              profile={profile}
+              settings={settings}
+              user={user}
+              wallet={wallet}
+            />
+          }
+        />
         <Route
           path={CUSTOMER_ROUTE_PATHS.checkout}
           element={

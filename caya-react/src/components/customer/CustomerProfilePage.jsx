@@ -1,4 +1,6 @@
+import { CustomerFeedbackContactCard } from "@/components/concierge/CustomerFeedbackContactCard.jsx";
 import { CustomerConciergePanel } from "@/components/concierge/CustomerConciergePanel.jsx";
+import { CustomerProfileExtrasCard } from "@/components/dashboard/CustomerProfileExtrasCard.jsx";
 import { CustomerProfileForm } from "@/components/dashboard/CustomerProfileForm.jsx";
 import { CustomerWalletPanel } from "@/components/dashboard/CustomerWalletPanel.jsx";
 import { CustomerOrderHistory } from "@/components/orders/CustomerOrderHistory.jsx";
@@ -15,6 +17,7 @@ export function CustomerProfilePage({
   onUseAddress,
   orders,
   profile,
+  settings,
   user,
   wallet
 }) {
@@ -35,7 +38,9 @@ export function CustomerProfilePage({
       </Card>
       <ScrollArea className="grid max-h-[calc(100vh-12rem)] gap-6 pr-1">
         <CustomerProfileForm onProfileSaved={onProfileSaved} profile={profile} user={user} />
+        <CustomerProfileExtrasCard profile={profile} user={user} />
         <CustomerWalletPanel currencySymbol={currencySymbol} loading={wallet.loading} wallet={wallet.wallet} />
+        <CustomerFeedbackContactCard profile={profile} settings={settings} user={user} />
         <CustomerConciergePanel
           concierge={concierge}
           currencySymbol={currencySymbol}
